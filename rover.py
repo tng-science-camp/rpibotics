@@ -468,15 +468,18 @@ class MARSROVER(object):
                 gpio.output(GPIO_PIN_LED, False)
 
 
-    def take_photo(self):
+    def capture_image(self):
         if ( self.testMode ):
-            print ("+Take photo and save it to " + IMG_LOC)
+            print ("@capture_image: Take photo and save it to " + IMG_LOC)
         else:
 
             #create instance
             camera = picamera.PiCamera()
             camera.resolution = (1640, 922)
 
+            #awb mode
+            #see http://picamera.readthedocs.io/en/release-1.10/api_camera.html
+            camera.awb_mode = 'auto'
 
             #flip horizontally & vertically
             camera.vflip = True
@@ -485,7 +488,7 @@ class MARSROVER(object):
             #photopath=tempfile.gettempdir() + '/' + fileprefix + '-' + time.strftime("%Y%m%d-%a-%H%M-%S") + '.jpg'
             #photopath='/var/www/pydev/' + time.strftime("%Y%m%d-%a-%H%M-%S") + '.jpg'
             photopath=IMG_LOC + time.strftime("%Y%m%d-%H%M-%S") + '.jpg'
-            print ("+Take photo")
+            print ("@capture_image: Take photo and save it as " + photopath)
             camera.capture(photopath)
             camera.close()
 
