@@ -142,6 +142,7 @@ class MARSROVER(object):
 #          print("Heading: ", heading)
           return heading
 
+    # Measure humidity
     def measure_humidity(self):
         if ( self.testMode ):
             print ("@measure_humidity")
@@ -157,6 +158,7 @@ class MARSROVER(object):
             else:
                 print('@measure_humidity: Failed to get measurement. Try again!')
 
+    # Measure temperature
     def measure_temperature(self):
         if ( self.testMode ):
             print ("@measure_humidity")
@@ -171,21 +173,6 @@ class MARSROVER(object):
                 #print('Temp={0:0.1f}*F  Humidity={1:0.1f}%'.format(temperature, humidity))
             else:
                 print('@measure_temperature: Failed to get measurement. Try again!')
-
-    def get_environmental_data(self):
-        if ( self.testMode ):
-            print ("+Get environmental data")
-        else:
-            humidity, temperature = Adafruit_DHT.read_retry(AM2302, GPIO_PIN_AM2302)
-
-            # Un-comment the line below to convert the temperature to Fahrenheit.
-            temperature = temperature * 9/5.0 + 32
-
-            if humidity is not None and temperature is not None:
-    	        #print('Temp={0:0.1f}*C  Humidity={1:0.1f}%'.format(temperature, humidity))
-    	        print('Temp={0:0.1f}*F  Humidity={1:0.1f}%'.format(temperature, humidity))
-            else:
-                print('Failed to get reading. Try again!')
 
     # Move forward so many units
     # To move right, we put the both motors into forward
