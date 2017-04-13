@@ -161,7 +161,7 @@ class MARSROVER(object):
     # Measure temperature
     def measure_temperature(self):
         if ( self.testMode ):
-            print ("@measure_humidity")
+            print ("@measure_temperature")
         else:
             humidity, temperature = Adafruit_DHT.read_retry(AM2302, GPIO_PIN_AM2302)
 
