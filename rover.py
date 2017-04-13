@@ -522,7 +522,7 @@ class MARSROVER(object):
             camera.shutter_speed = shutter_speed
 
             #photopath='/var/www/pydev/' + time.strftime("%Y%m%d-%a-%H%M-%S") + '.jpg'
-            print ("@capture_manual_image: Take photo with ISO="+str(iso)+" and Shutter Speed="+str(shutter_speed))
             photopath=IMG_LOC + time.strftime("%Y%m%d-%H%M-%S") + '_iso-' + str(iso) + '_ss-' + str(shutter_speed) +'.jpg'
+            print ("@capture_manual_image: Take photo with ISO="+str(iso)+" and Shutter Speed="+str(shutter_speed)+ ". Save it as " + photopath)
             camera.capture(photopath)
             camera.close()
