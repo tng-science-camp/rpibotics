@@ -7,7 +7,7 @@ if $if_up; then
 	# Wireless alias
 	case "$ifssid" in
                 #camp wifi
-		DeepSpaceCampNetwork-5G) aliasip="192.168.0.11/24";gw="192.168.0.1";;
+		DeepSpaceCampNetwork-2.4G) aliasip="192.168.0.11/24";gw="192.168.0.1";;
                 #Your home network - change ssid, ip addr, and gateway
 		UR_SSID) aliasip="192.168.0.11/24";gw="192.168.0.1";;
                 #keep this for Kevin's own AP on his laptop as a backup

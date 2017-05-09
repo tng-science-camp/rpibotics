@@ -161,7 +161,7 @@ class MARSROVER(object):
     # Measure temperature
     def measure_temperature(self):
         if ( self.testMode ):
-            print ("@measure_humidity")
+            print ("@measure_temperature")
         else:
             humidity, temperature = Adafruit_DHT.read_retry(AM2302, GPIO_PIN_AM2302)
 
@@ -492,9 +492,9 @@ class MARSROVER(object):
             camera.capture(photopath)
             camera.close()
 
-    def take_manual_photo(self,iso,shutter_speed):
+    def capture_manual_image(self,iso,shutter_speed):
         if ( self.testMode ):
-            print ("+Take photo and save it to " + IMG_LOC)
+            print ("@capture_manual_image: Take photo and save it to " + IMG_LOC)
         else:
 
             #create instance
@@ -522,7 +522,7 @@ class MARSROVER(object):
             camera.shutter_speed = shutter_speed
 
             #photopath='/var/www/pydev/' + time.strftime("%Y%m%d-%a-%H%M-%S") + '.jpg'
-            print ("+Take photo with ISO="+str(iso)+" and Shutter Speed="+str(shutter_speed))
             photopath=IMG_LOC + time.strftime("%Y%m%d-%H%M-%S") + '_iso-' + str(iso) + '_ss-' + str(shutter_speed) +'.jpg'
+            print ("@capture_manual_image: Take photo with ISO="+str(iso)+" and Shutter Speed="+str(shutter_speed)+ ". Save it as " + photopath)
             camera.capture(photopath)
             camera.close()
