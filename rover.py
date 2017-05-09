@@ -380,7 +380,7 @@ class MARSROVER(object):
             #print("+Turn Completed")
             print("Turn: ", degrees, " Start: ", math.degrees(init_heading),  " End: ", math.degrees(current_heading))
             #shutdown motor
-            self.stop()
+            #self.stop()
 
 
     def turn_left_by_degree(self,degrees):
@@ -434,7 +434,7 @@ class MARSROVER(object):
             #print("+Turn Completed")
             print("Turn: ", degrees, " Start: ", math.degrees(init_heading),  " End: ", math.degrees(current_heading))
             #shutdown motor
-            self.stop()
+            #self.stop()
 
 
     # Stop all the motors 
@@ -475,7 +475,8 @@ class MARSROVER(object):
 
             #create instance
             camera = picamera.PiCamera()
-            camera.resolution = (1640, 922)
+            #camera.resolution = (1640, 922)
+            camera.resolution = (1280, 720)
 
             #awb mode
             #see http://picamera.readthedocs.io/en/release-1.10/api_camera.html
