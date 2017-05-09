@@ -197,7 +197,7 @@ class MARSROVER(object):
                 time.sleep(STEP_DURATION)
 
             #shutdown motor
-            self.stop()
+            #self.stop()
 
     def clear(self):
        gpio.cleanup()
@@ -226,7 +226,7 @@ class MARSROVER(object):
                 time.sleep(STEP_DURATION)
 
             #shutdown motor
-            self.stop()
+            #self.stop()
 
     # turn left in sec
     def turn_left(self,units):
@@ -249,7 +249,7 @@ class MARSROVER(object):
                 time.sleep(TURN_STEP)
 
             #shutdown motor
-            self.stop()
+            #self.stop()
 
     # turn right in sec
     def turn_right(self,units):
@@ -272,7 +272,7 @@ class MARSROVER(object):
                 time.sleep(TURN_STEP)
 
             #shutdown motor
-            self.stop()
+            #self.stop()
 
     def heading_error(self,target_heading):
 
