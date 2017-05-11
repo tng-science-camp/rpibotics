@@ -33,7 +33,7 @@ class Motor(object):
         GPIO.output(self._in2, False)
         self._pwm.start(duty_cycle)
 
-    def counter_clockwise(self, duty_cycle=50):
+    def turn_counter_clockwise(self, duty_cycle=50):
         """
         Turns the motor counter clockwise.
         :param duty_cycle: The percent duty cucle of the PWM. Defaults to 50%
