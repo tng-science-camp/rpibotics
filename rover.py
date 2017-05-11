@@ -32,6 +32,9 @@ STEP_DURATION=1
 # Turn step in sec
 TURN_STEP=0.1
 
+# paulse
+PAUSE=0.5
+
 #camera image location
 IMG_LOC="/var/www/html/rover_img/"
 
@@ -233,7 +236,14 @@ class MARSROVER(object):
                 #time.sleep(STEP_DURATION)
 
             #shutdown motor
-            #self.stop()
+            gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+
+            #pause before next step
+            time.sleep(PAUSE)
+
 
     def clear(self):
        gpio.cleanup()
@@ -259,10 +269,17 @@ class MARSROVER(object):
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, True)
                 Rpwm.start(100)
 
-                time.sleep(STEP_DURATION)
+                time.sleep(TURN_STEP)
+                #time.sleep(STEP_DURATION)
 
             #shutdown motor
-            #self.stop()
+            gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+
+            #pause before next step
+            time.sleep(PAUSE)
 
     # turn left in sec
     def turn_left(self,units):
@@ -285,7 +302,13 @@ class MARSROVER(object):
                 time.sleep(TURN_STEP)
 
             #shutdown motor
-            #self.stop()
+            gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+
+            #pause before next step
+            time.sleep(PAUSE)
 
     # turn right in sec
     def turn_right(self,units):
@@ -308,7 +331,14 @@ class MARSROVER(object):
                 time.sleep(TURN_STEP)
 
             #shutdown motor
-            #self.stop()
+            gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+
+            #pause before next step
+            time.sleep(PAUSE)
+
 
     def heading_error(self,target_heading):
 
