@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-from rover import Rover
+from rover import rover_sj17
 import time
 
-myRover = Rover()
+myRover = rover_sj17.RoverSJ17()
 
 myRover.motor1.turn_clockwise()
 myRover.motor2.turn_counter_clockwise()
