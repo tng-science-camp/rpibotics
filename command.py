@@ -25,4 +25,9 @@ myRover=rover.MARSROVER()
 #Use this function to control iso and shutter speed (in microsecond, max 6s)
 #myRover.capture_manual_image(100,1000000)
 
+########## DO NOT CHANGE BELOW ##########
+#clear gpio ports
+myRover.clear()
+
+
 
