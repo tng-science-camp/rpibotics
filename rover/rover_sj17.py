@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
-from rover.motor import Motor
+from rover.dcmotor import DCMotor
 
 
-class Rover(object):
+class RoverSJ17(object):
     # There should only be one instance
     _instances = []
 
@@ -12,8 +12,8 @@ class Rover(object):
             print("ERROR: You can't have more than one Rover instance.")
             exit(1)
         self._instances.append(self)
-        self.motor1 = Motor(13, 26, 19)
-        self.motor2 = Motor(12, 20, 16)
+        self.motor1 = DCMotor(13, 26, 19)
+        self.motor2 = DCMotor(12, 20, 16)
 
     def __del__(self):
         GPIO.cleanup()

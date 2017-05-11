@@ -8,7 +8,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 
-class Motor(object):
+class DCMotor(object):
 
     def __init__(self, ena, in1, in2):
         self._ena = ena
