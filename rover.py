@@ -50,6 +50,10 @@ HMC5883_ADDRESS = 0x1e
 AM2302 = Adafruit_DHT.AM2302
 GPIO_PIN_AM2302 = 24	   #gpio pin #24
 
+#IR Obstacle Sensors
+GPIO_PIN_IR_SENSOR_LEFT = 17  #gpio pin #17
+GPIO_PIN_IR_SENSOR_RIGHT = 27  #gpio pin #27
+
 
 #LED 
 GPIO_PIN_LED = 21  #gpio pin #21
@@ -68,6 +72,8 @@ gpio.setup(GPIO_PIN_LEFT_MOTOR_BACKWARD, gpio.OUT)
 gpio.setup(GPIO_PIN_LEFT_PWM, gpio.OUT)
 Lpwm = gpio.PWM(GPIO_PIN_LEFT_PWM, 20)  # Initialize PWM on pwmPin 20Hz frequency
 
+gpio.setup(GPIO_PIN_IR_SENSOR_LEFT, gpio.IN)
+gpio.setup(GPIO_PIN_IR_SENSOR_RIGHT, gpio.IN)
 
 gpio.setup(GPIO_PIN_LED, gpio.OUT)
 
@@ -174,8 +180,26 @@ class MARSROVER(object):
             else:
                 print('@measure_temperature: Failed to get measurement. Try again!')
 
+    # Measure temperature
+    def read_ir_sensor_left(self):
+        if ( self.testMode ):
+            print ("@read_ir_sensor_left")
+        else:
+            print ("@read_ir_sensor_left")
+            sensor_read = gpio.input(GPIO_PIN_IR_SENSOR_LEFT)
+
+            #if (gpio.input(GPIO_PIN_IR_SENSOR_LEFT)):
+            if (sensor_read):
+                print("clear")
+            else:
+                print("something there")
+            #print (sensor_read)
+            return sensor_read
+
+
+
+
     # Move forward so many units
-    # To move right, we put the both motors into forward
     def go_forward(self,units):
         if ( self.testMode ):
             for step in range(0,units):
@@ -186,6 +210,17 @@ class MARSROVER(object):
             #gpio.output(GPIO_PIN_ENABLE, True)
             for step in range(0,units):
                 print ("+Go forward")
+
+                #check for obstacle 
+                if (not gpio.input(GPIO_PIN_IR_SENSOR_LEFT)):
+                    print("+Abort: Obstacle detected on the left IR sensor")
+                    break
+                if (not gpio.input(GPIO_PIN_IR_SENSOR_RIGHT)):
+                    print("+Abort: Obstacle detected on the right IR sensor")
+                    break
+                
+                #left_ir_sensor_read = 
+
                 gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
                 Lpwm.start(100)
@@ -194,7 +229,8 @@ class MARSROVER(object):
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
                 Rpwm.start(100)
 
-                time.sleep(STEP_DURATION)
+                time.sleep(TURN_STEP)
+                #time.sleep(STEP_DURATION)
 
             #shutdown motor
             #self.stop()
