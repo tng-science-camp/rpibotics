@@ -57,6 +57,9 @@ GPIO_PIN_AM2302 = 24	   #gpio pin #24
 GPIO_PIN_IR_SENSOR_LEFT = 17  #gpio pin #17
 GPIO_PIN_IR_SENSOR_RIGHT = 27  #gpio pin #27
 
+#Optocoupler Speed Encoders
+GPIO_PIN_SPEED_SENSOR_LEFT = 8  #gpio pin #8
+GPIO_PIN_SPEED_SENSOR_RIGHT = 7 #gpio pin #7
 
 #LED 
 GPIO_PIN_LED = 21  #gpio pin #21
@@ -77,6 +80,9 @@ Lpwm = gpio.PWM(GPIO_PIN_LEFT_PWM, 20)  # Initialize PWM on pwmPin 20Hz frequenc
 
 gpio.setup(GPIO_PIN_IR_SENSOR_LEFT, gpio.IN)
 gpio.setup(GPIO_PIN_IR_SENSOR_RIGHT, gpio.IN)
+
+gpio.setup(GPIO_PIN_SPEED_SENSOR_LEFT, gpio.IN)
+gpio.setup(GPIO_PIN_SPEED_SENSOR_RIGHT, gpio.IN)
 
 gpio.setup(GPIO_PIN_LED, gpio.OUT)
 
@@ -198,6 +204,75 @@ class MARSROVER(object):
                 print("something there")
             #print (sensor_read)
             return sensor_read
+
+    # turn using speed sensor
+    def turn_right_using_speed_sensor(self,slots):
+        if ( self.testMode ):
+            print ("@turn_right_using_speed_sensor")
+        else:
+            print ("@turn_right_using_speed_sensor")
+            count = 0
+            ticks = slots * 2 #two state changes per slot: up/down and down/up"
+            last_read = 0
+            cur_read = 0
+            while(count<ticks):
+                #if state changes from high to low or low to high
+                cur_read = gpio.input(GPIO_PIN_SPEED_SENSOR_LEFT)
+                if last_read != cur_read:
+                    count += 1
+                    last_read = cur_read
+                
+                #debug
+                print(count)
+
+                gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, True)
+                gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
+                Lpwm.start(60)
+
+
+            #shutdown motor
+            gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+
+            #pause before next step
+            time.sleep(PAUSE)
+
+
+    # turn using speed sensor
+    def turn_left_using_speed_sensor(self,slots):
+        if ( self.testMode ):
+            print ("@turn_left_using_speed_sensor")
+        else:
+            print ("@turn_left_using_speed_sensor")
+            count = 0
+            ticks = slots * 2 #two state changes per slot: up/down and down/up"
+            last_read = 0
+            cur_read = 0
+            while(count<ticks):
+                cur_read = gpio.input(GPIO_PIN_SPEED_SENSOR_RIGHT)
+                #if state changes from high to low or low to high
+                if last_read != cur_read:
+                    count += 1
+                    last_read = cur_read
+                
+                #debug
+                print(count)
+
+                gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, True)
+                gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+                Rpwm.start(60)
+
+
+            #shutdown motor
+            gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
+            gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+
+            #pause before next step
+            time.sleep(PAUSE)
 
 
 
