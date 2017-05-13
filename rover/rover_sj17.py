@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from rover.dcmotor import DCMotor
+from rover.dc_motor import DCMotor
 import picamera
 import picamera.array
 from rover import image_processor
