@@ -15,6 +15,14 @@ import RPi.GPIO as gpio
 # Print actions without actually performing them
 TEST_MODE=False
 
+#PWM/duty cycle for each motor
+LMOTORSPEED=80
+RMOTORSPEED=78
+
+#lance servo duty cycle determines position
+LANCE_OPEN = 2
+LANCE_CLOSE = 10.5
+
 # Two motors with two directions each = four GPIO pins
 # kc: pwm gpio 12:13
 
@@ -61,6 +69,9 @@ GPIO_PIN_IR_SENSOR_RIGHT = 27  #gpio pin #27
 GPIO_PIN_SPEED_SENSOR_LEFT = 8  #gpio pin #8
 GPIO_PIN_SPEED_SENSOR_RIGHT = 7 #gpio pin #7
 
+#LANCE SERVO
+#TODO: change pin
+GPIO_PIN_LANCE_SERVO = 18 #gpio pin #18
 #LED 
 GPIO_PIN_LED = 21  #gpio pin #21
 
@@ -85,6 +96,10 @@ gpio.setup(GPIO_PIN_SPEED_SENSOR_LEFT, gpio.IN)
 gpio.setup(GPIO_PIN_SPEED_SENSOR_RIGHT, gpio.IN)
 
 gpio.setup(GPIO_PIN_LED, gpio.OUT)
+
+gpio.setup(GPIO_PIN_LANCE_SERVO, gpio.OUT)
+lance_servo_pwm = gpio.PWM(GPIO_PIN_LANCE_SERVO, 50)  # Initialize Servo PWM 
+
 
 #### Objects ####
 
@@ -235,6 +250,8 @@ class MARSROVER(object):
             gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+            Lpwm.stop()
+            Rpwm.stop()
 
             #pause before next step
             time.sleep(PAUSE)
@@ -270,6 +287,8 @@ class MARSROVER(object):
             gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+            Lpwm.stop()
+            Rpwm.stop()
 
             #pause before next step
             time.sleep(PAUSE)
@@ -278,7 +297,9 @@ class MARSROVER(object):
 
 
     # Move forward so many units
-    def go_forward(self,units):
+    def go_forward(self,units,check_ir=0):
+        
+
         if ( self.testMode ):
             for step in range(0,units):
                 print ("+Go forward")
@@ -289,23 +310,26 @@ class MARSROVER(object):
             for step in range(0,units):
                 print ("+Go forward")
 
-                #check for obstacle 
-                if (not gpio.input(GPIO_PIN_IR_SENSOR_LEFT)):
-                    print("+Abort: Obstacle detected on the left IR sensor")
-                    break
-                if (not gpio.input(GPIO_PIN_IR_SENSOR_RIGHT)):
-                    print("+Abort: Obstacle detected on the right IR sensor")
-                    break
+                #check for obstacle when check_ir is on(1)
+                if check_ir == 1:
+                    if (not gpio.input(GPIO_PIN_IR_SENSOR_LEFT)):
+                        print("+Abort: Obstacle detected on the left IR sensor")
+                        break
+                    if (not gpio.input(GPIO_PIN_IR_SENSOR_RIGHT)):
+                        print("+Abort: Obstacle detected on the right IR sensor")
+                        break
+
                 
                 #left_ir_sensor_read = 
 
                 gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
-                Lpwm.start(100)
+                #Lpwm.start(100)
+                Lpwm.start(LMOTORSPEED)
 
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
-                Rpwm.start(100)
+                Rpwm.start(RMOTORSPEED)
 
                 time.sleep(TURN_STEP)
                 #time.sleep(STEP_DURATION)
@@ -315,6 +339,8 @@ class MARSROVER(object):
             gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+            Lpwm.stop()
+            Rpwm.stop()
 
             #pause before next step
             time.sleep(PAUSE)
@@ -338,11 +364,11 @@ class MARSROVER(object):
                 print ("+Go backward")
                 gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
                 gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, True)
-                Lpwm.start(100)
+                Lpwm.start(LMOTORSPEED)
 
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, True)
-                Rpwm.start(100)
+                Rpwm.start(RMOTORSPEED)
 
                 time.sleep(TURN_STEP)
                 #time.sleep(STEP_DURATION)
@@ -352,6 +378,8 @@ class MARSROVER(object):
             gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+            Lpwm.stop()
+            Rpwm.stop()
 
             #pause before next step
             time.sleep(PAUSE)
@@ -368,11 +396,11 @@ class MARSROVER(object):
                 print ("+Turn left")
                 gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
                 gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, True)
-                Lpwm.start(100)
+                Lpwm.start(LMOTORSPEED)
 
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
-                Rpwm.start(100)
+                Rpwm.start(RMOTORSPEED)
 
                 time.sleep(TURN_STEP)
 
@@ -381,6 +409,8 @@ class MARSROVER(object):
             gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+            Lpwm.stop()
+            Rpwm.stop()
 
             #pause before next step
             time.sleep(PAUSE)
@@ -397,11 +427,11 @@ class MARSROVER(object):
                 print ("+Turn right")
                 gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
-                Lpwm.start(100)
+                Lpwm.start(LMOTORSPEED)
 
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, True)
-                Rpwm.start(100)
+                Rpwm.start(RMOTORSPEED)
 
                 time.sleep(TURN_STEP)
 
@@ -410,6 +440,8 @@ class MARSROVER(object):
             gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, False)
             gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
+            Lpwm.stop()
+            Rpwm.stop()
 
             #pause before next step
             time.sleep(PAUSE)
@@ -668,3 +700,17 @@ class MARSROVER(object):
             print ("@capture_manual_image: Take photo with ISO="+str(iso)+" and Shutter Speed="+str(shutter_speed)+ ". Save it as " + photopath)
             camera.capture(photopath)
             camera.close()
+
+    def arm_lance (self):
+                lance_servo_pwm.start(LANCE_OPEN)
+                time.sleep(PAUSE)
+
+    def disarm_lance (self):
+                lance_servo_pwm.start(LANCE_CLOSE)
+                time.sleep(PAUSE)
+
+
+
+
+
+
