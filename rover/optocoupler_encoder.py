@@ -10,10 +10,7 @@ class OptocouplerEncoder(object):
     def __init__(self, gpio_pin, s=20):
         self._slit_count = s
         self._gpio_pin = gpio_pin
-        self._count = 0
-        self._rotations = 0
-        self._rotation_rate = 0
-        self._previous_update_time = None
+        self.reset()
         GPIO.setup(self._gpio_pin, GPIO.IN)
 
     def __del__(self):
