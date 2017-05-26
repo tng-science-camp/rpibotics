@@ -16,6 +16,7 @@ args = vars(parser.parse_args())
 
 def main(stdscr, pin=args['pin'], slit_count=args['slit_count']):
     encoder = OptocouplerEncoder(pin, s=slit_count)
+    encoder.run()
     quit = False
     stdscr.nodelay(True)
     stdscr.clear()
