@@ -30,19 +30,18 @@ def main(stdscr, pin=args['pin'], slit_count=args['slit_count']):
             code = stdscr.getch()
             if code == ord('q'):
                 quit = True
-            else:
-                if code == ord('r'):
-                    encoder.reset()
-                stdscr.clear()
-                stdscr.addstr("q   exit program\n")
-                stdscr.addstr("r   reset the encoder\n")
-                stdscr.addstr("=====================\n")
-                stdscr.addstr(
-                    "Rotations:     " + str(encoder.get_rotations()) + "\n")
-                stdscr.addstr(
-                    "Rotation Rage: " + str(encoder.get_rotation_rate()) +
-                    "\n")
-                stdscr.refresh()
+            elif code == ord('r'):
+                encoder.reset()
+            stdscr.clear()
+            stdscr.addstr("q   exit program\n")
+            stdscr.addstr("r   reset the encoder\n")
+            stdscr.addstr("=====================\n")
+            stdscr.addstr(
+                "Rotations:     " + str(encoder.get_rotations()) + "\n")
+            stdscr.addstr(
+                "Rotation Rage: " + str(encoder.get_rotation_rate()) +
+                "\n")
+            stdscr.refresh()
         except Exception as e:
             # No input
             pass
