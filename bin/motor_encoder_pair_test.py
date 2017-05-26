@@ -48,7 +48,7 @@ def main(stdscr,
     else:
         stdscr.addstr("Counter-Clockwise\n")
     stdscr.addstr("Frequency:     " + str(frequency) + "\n")
-    stdscr.addstr("Duty Cycle:    " + str(duty_cycle))
+    stdscr.addstr("Duty Cycle:    " + str(duty_cycle) + "\n")
     stdscr.addstr("Rotations:     " + str(encoder.get_rotations()) + "\n")
     stdscr.addstr("Rotation Rage: " + str(encoder.get_rotation_rate()) + "\n")
     while not quit:
@@ -64,31 +64,6 @@ def main(stdscr,
                     time.sleep(1)
                 quit = True
             else:
-                stdscr.addstr("q       exit program\n")
-                stdscr.addstr("s       toggle motor start or stop\n")
-                stdscr.addstr("c       toggle the motor direction\n")
-                stdscr.addstr("r       reset the encoder\n")
-                stdscr.addstr("RIGHT   increase PWM frequency\n")
-                stdscr.addstr("LEFT    decrease PWM frequency\n")
-                stdscr.addstr("UP      increase PWM duty cycle\n")
-                stdscr.addstr("DOWN    decrease PWM duty cycle\n")
-                stdscr.addstr("===============================\n")
-                stdscr.addstr("Status:        ")
-                if stop:
-                    stdscr.addstr("Stopped\n")
-                else:
-                    stdscr.addstr("Running\n")
-                stdscr.addstr("Direction:     ")
-                if turn_clockwise:
-                    stdscr.addstr("Clockwise\n")
-                else:
-                    stdscr.addstr("Counter-Clockwise\n")
-                stdscr.addstr("Frequency:     " + str(frequency) + "\n")
-                stdscr.addstr("Duty Cycle:    " + str(duty_cycle))
-                stdscr.addstr("Rotations:     " +
-                              str(encoder.get_rotations()) + "\n")
-                stdscr.addstr("Rotation Rage: " + str(
-                    encoder.get_rotation_rate()) + "\n")
                 if code == ord('s'):
                     stop = not stop
                     if stop:
@@ -124,8 +99,32 @@ def main(stdscr,
                         motor.turn_clockwise(duty_cycle)
                     else:
                         motor.turn_counter_clockwise(duty_cycle)
-                #else:
-                #    stdscr.addstr("None")
+
+                stdscr.addstr("q       exit program\n")
+                stdscr.addstr("s       toggle motor start or stop\n")
+                stdscr.addstr("c       toggle the motor direction\n")
+                stdscr.addstr("r       reset the encoder\n")
+                stdscr.addstr("RIGHT   increase PWM frequency\n")
+                stdscr.addstr("LEFT    decrease PWM frequency\n")
+                stdscr.addstr("UP      increase PWM duty cycle\n")
+                stdscr.addstr("DOWN    decrease PWM duty cycle\n")
+                stdscr.addstr("===============================\n")
+                stdscr.addstr("Status:        ")
+                if stop:
+                    stdscr.addstr("Stopped\n")
+                else:
+                    stdscr.addstr("Running\n")
+                stdscr.addstr("Direction:     ")
+                if turn_clockwise:
+                    stdscr.addstr("Clockwise\n")
+                else:
+                    stdscr.addstr("Counter-Clockwise\n")
+                stdscr.addstr("Frequency:     " + str(frequency) + "\n")
+                stdscr.addstr("Duty Cycle:    " + str(duty_cycle) + "\n")
+                stdscr.addstr("Rotations:     " +
+                              str(encoder.get_rotations()) + "\n")
+                stdscr.addstr("Rotation Rage: " + str(
+                    encoder.get_rotation_rate()) + "\n")
                 stdscr.refresh()
         except Exception as e:
             # No input
