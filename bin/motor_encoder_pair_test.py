@@ -11,7 +11,7 @@ parser.add_argument("-f", dest="frequency", default=20, type=int,
                     help="Set the frequency of the PWM in Hz")
 parser.add_argument("-d", dest="duty_cycle", default=70, type=int,
                     help="Set the duty cycle of the PWM in %%")
-parser.add_argument("-e", dest="encoder_pin", default=8, type=int,
+parser.add_argument("-e", dest="encoder_pin", default=7, type=int,
                     help="GPIO pin of the optocoupler")
 args = vars(parser.parse_args())
 
@@ -50,7 +50,7 @@ def main(stdscr,
     stdscr.addstr("Frequency:     " + str(frequency) + "\n")
     stdscr.addstr("Duty Cycle:    " + str(duty_cycle) + "\n")
     stdscr.addstr("Rotations:     " + str(encoder.get_rotations()) + "\n")
-    stdscr.addstr("Rotation Rage: " + str(encoder.get_rotation_rate()) + "\n")
+    stdscr.addstr("Rotation Rate: " + str(encoder.get_rotation_rate()) + "\n")
     while not quit:
         try:
             code = stdscr.getch()
@@ -123,7 +123,7 @@ def main(stdscr,
                 stdscr.addstr("Duty Cycle:    " + str(duty_cycle) + "\n")
                 stdscr.addstr("Rotations:     " +
                               str(encoder.get_rotations()) + "\n")
-                stdscr.addstr("Rotation Rage: " + str(
+                stdscr.addstr("Rotation Rate: " + str(
                     encoder.get_rotation_rate()) + "\n")
                 stdscr.refresh()
         except Exception as e:
