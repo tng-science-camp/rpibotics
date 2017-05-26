@@ -25,7 +25,7 @@ class OptocouplerEncoder(object):
     def update_on_change(self, gpio_pin):
         assert self._gpio_pin == gpio_pin
         current_time = time.time()
-        self._count += self._count
+        self._count += 1
         self._rotations = self._count / self._slit_count
         if self._previous_update_time is not None:
             duration = current_time - self._previous_update_time
