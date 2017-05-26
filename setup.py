@@ -8,7 +8,7 @@ setup(name='rover',
       author_email='',
       license='TBD',
       packages=['rover'],
-      install_required=[
-          'cv2',
-      ],
+      install_required=['numpy',
+                        'cv2',
+                        ],
       zip_safe=False)
