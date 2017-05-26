@@ -10,7 +10,7 @@ GPIO.setmode(GPIO.BCM)
 
 class DCMotor(object):
 
-    def __init__(self, ena, in1, in2):
+    def __init__(self, ena, in1, in2, f=20):
         self._ena = ena
         self._in1 = in1
         self._in2 = in2
@@ -18,7 +18,7 @@ class DCMotor(object):
         GPIO.setup(self._in1, GPIO.OUT)
         GPIO.setup(self._in2, GPIO.OUT)
         # Initialize PWM on pwmPin 20Hz frequency
-        self._pwm = GPIO.PWM(self._ena, 20)
+        self._pwm = GPIO.PWM(self._ena, f)
 
     def __del__(self):
         GPIO.cleanup((self._ena, self._in1, self._in2))
