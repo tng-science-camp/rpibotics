@@ -58,6 +58,7 @@ class MobilitySystem(object):
                 r_diff_prev = r_diff
             d_right = d_right * (1.0 - u[0, 0])
             d_left = d_left * (1.0 + u[0, 1])
+            print("d_r = {:0.2f} d_l = {:0.2f}".format(d_right, d_left))
             self.motor_right.turn_counter_clockwise(d_right)
             self.motor_left.turn_counter_clockwise(d_left)
             time.sleep(delta_t)
