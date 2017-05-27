@@ -31,6 +31,8 @@ class MobilitySystem(object):
     def go_forward(self, rotations, duty_cycle=70, timeout=30, delta_t=0.1, P=0.1, I=0.0, D=0.0):
         start_time = time.time()
         u = numpy.matrix(((0),(0)))
+        d_right = duty_cycle
+        d_left = duty_cycle
         self._stop = False
         r_diff_prev = None
         self.encoder_right.reset()
@@ -54,8 +56,10 @@ class MobilitySystem(object):
                     r_diff_dot = (r_diff - r_diff_prev) / delta_t
                     u = P * r_diff + D * r_diff_dot
                 r_diff_prev = r_diff
-            self.motor_right.turn_counter_clockwise(duty_cycle * (1.0 - u[0, 0]))
-            self.motor_left.turn_counter_clockwise(duty_cycle * (1.0 + u[0, 1]))
+            d_right = d_right * (1.0 - u[0, 0])
+            d_left = d_left * (1.0 + u[0, 1])
+            self.motor_right.turn_counter_clockwise(d_right)
+            self.motor_left.turn_counter_clockwise(d_left)
             time.sleep(delta_t)
 
         self.stop()
