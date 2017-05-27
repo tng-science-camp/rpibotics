@@ -18,7 +18,9 @@ class MobilitySystem(object):
         self.motor_right = DCMotor(13, 26, 19, f=20000)
         self.motor_left = DCMotor(12, 20, 16, f=20000)
         self.encoder_right = OptocouplerEncoder(7, s=20)
+        self.encoder_right.run()
         self.encoder_left = OptocouplerEncoder(8, s=20)
+        self.encoder_left.run()
         self._stop = True
         self._delta_t = 0.1
 
@@ -29,9 +31,7 @@ class MobilitySystem(object):
         self._stop = False
         r_diff_prev = None
         self.encoder_right.reset()
-        self.encoder_right.run()
         self.encoder_left.reset()
-        self.encoder_left.run()
         self.motor_right.turn_counter_clockwise(duty_cycle = 70)
         self.motor_left.turn_counter_clockwise(duty_cycle = 70)
         while not self._stop or time.time() - start_time < timeout:
@@ -43,19 +43,19 @@ class MobilitySystem(object):
                 r_diff_dot = (r_diff - r_diff_prev) / self._delta_t
                 u = P * r_diff + D * r_diff_dot
                 r_diff_prev = r_diff
-                print("Right  r = %f, r_dot = %f",
+                print("Right  r = %0.2f, r_dot = %0.2f",
                       self.encoder_right.get_rotations(),
                       self.encoder_right.get_rotation_rate())
-                print("Left   r = %f, r_dot = %f",
+                print("Left   r = %0.2f, r_dot = %0.2f",
                       self.encoder_left.get_rotations(),
                       self.encoder_left.get_rotation_rate())
             time.sleep(self._delta_t)
         self.motor_left.stop()
         self.motor_right.stop()
-        print("Right  r = %f, r_dot = %f",
+        print("Right  r = %0.2f, r_dot = %0.2f",
               self.encoder_right.get_rotations(),
               self.encoder_right.get_rotation_rate())
-        print("Left   r = %f, r_dot = %f",
+        print("Left   r = %0.2f, r_dot = %0.2f",
               self.encoder_left.get_rotations(),
               self.encoder_left.get_rotation_rate())
 
