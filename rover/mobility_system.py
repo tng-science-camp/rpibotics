@@ -23,9 +23,12 @@ class MobilitySystem(object):
         self.encoder_left = OptocouplerEncoder(8, s=20)
         self.encoder_left.run()
         self._stop = True
-        self._delta_t = 0.1
 
-    def go_forward(self, rotations, duty_cycle=70, timeout=5):
+    def stop(self):
+        self.motor_left.stop()
+        self.motor_right.stop()
+
+    def go_forward(self, rotations, duty_cycle=70, timeout=5, delta_t=0.1):
         start_time = time.time()
         P = 1
         D = 0
@@ -36,21 +39,18 @@ class MobilitySystem(object):
         self.motor_right.turn_counter_clockwise(duty_cycle)
         self.motor_left.turn_counter_clockwise(duty_cycle)
         while not self._stop or time.time() - start_time < timeout:
+            print("t = {:0.2f}".format(time.time()))
             if self.encoder_right.get_rotations() >= rotations or self.encoder_left.get_rotations() >= rotations:
                 self._stop = True
             else:
                 r_diff = numpy.matrix(((self.encoder_right.get_rotations() - self.encoder_left.get_rotations()),
                                        (self.encoder_right.get_rotation_rate() - self.encoder_left.get_rotation_rate())))
                 if r_diff_prev is not None:
-                    r_diff_dot = (r_diff - r_diff_prev) / self._delta_t
+                    r_diff_dot = (r_diff - r_diff_prev) / delta_t
                     u = P * r_diff + D * r_diff_dot
                 r_diff_prev = r_diff
-                print("Right  r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_right.get_rotations(), self.encoder_right.get_rotation_rate()))
-                print("Left   r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_left.get_rotations(), self.encoder_left.get_rotation_rate()))
-
-            time.sleep(self._delta_t)
-        self.motor_left.stop()
-        self.motor_right.stop()
+            time.sleep(delta_t)
+        self.stop()
         print("Right  r = {:0.2f}, r_dot = {:0.2f}"
               .format(self.encoder_right.get_rotations(),
               self.encoder_right.get_rotation_rate()))
