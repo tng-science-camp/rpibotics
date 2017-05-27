@@ -45,7 +45,7 @@ class MobilitySystem(object):
                     u = P * r_diff + D * r_diff_dot
                     r_diff_prev = r_diff
                 print("Right  r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_right.get_rotations(), self.encoder_right.get_rotation_rate()))
-                print("Left   r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_left.get_rotations()), self.encoder_left.get_rotation_rate())
+                print("Left   r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_left.get_rotations(), self.encoder_left.get_rotation_rate()))
 
             time.sleep(self._delta_t)
         self.motor_left.stop()
