@@ -1,4 +1,5 @@
 import numpy
+import math
 import time
 from rover.dc_motor import DCMotor
 from rover.optocoupler_encoder import OptocouplerEncoder
@@ -24,26 +25,26 @@ class MobilitySystem(object):
         self._stop = True
         self._delta_t = 0.1
 
-    def go_forward(self, rotations, timeout=20):
+    def go_forward(self, rotations, duty_cycle=70, timeout=20):
         start_time = time.time()
         P = 1
         D = 0
         self._stop = False
-        r_diff_prev = None
+        r_diff_prev = float('nan')
         self.encoder_right.reset()
         self.encoder_left.reset()
-        self.motor_right.turn_counter_clockwise(duty_cycle = 70)
-        self.motor_left.turn_counter_clockwise(duty_cycle = 70)
+        self.motor_right.turn_counter_clockwise(duty_cycle)
+        self.motor_left.turn_counter_clockwise(duty_cycle)
         while not self._stop or time.time() - start_time < timeout:
             if self.encoder_right.get_rotations() >= rotations or self.encoder_left.get_rotations() >= rotations:
                 self._stop = True
             else:
                 r_diff = numpy.matrix(((self.encoder_right.get_rotations() - self.encoder_left.get_rotations()),
                                        (self.encoder_right.get_rotation_rate() - self.encoder_left.get_rotation_rate())))
-                if r_diff_prev is not None:
+                if not math.isnan(r_diff_prev):
                     r_diff_dot = (r_diff - r_diff_prev) / self._delta_t
                     u = P * r_diff + D * r_diff_dot
-                    r_diff_prev = r_diff
+                r_diff_prev = r_diff
                 print("Right  r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_right.get_rotations(), self.encoder_right.get_rotation_rate()))
                 print("Left   r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_left.get_rotations(), self.encoder_left.get_rotation_rate()))
 
