@@ -13,15 +13,19 @@ myRover=rover.MARSROVER()
 
 #Use "#" to comment out the code
 #go_forward(units, check_ir) check_ir default is 1, 0 to disable
-#myRover.turn_right(6)
-#myRover.go_backward(7)
+#myRover.go_forward(2)
+#myRover.go_forward(7,0)
+#myRover.turn_left(5)
+#myRover.turn_right(5)
+#myRover.go_backward(2)
 myRover.arm_lance()
-myRover.go_forward(7,0)
 #myRover.turn_left(10)
 #myRover.turn_right(10)
 #myRover.capture_image()
 #myRover.measure_humidity() 
 #myRover.measure_temperature() 
+#myRover.get_heading()
+#myRover.read_magnet_detector()
 
 #myRover.turn_left(5)
 #myRover.turn_right(5)

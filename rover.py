@@ -16,11 +16,12 @@ import RPi.GPIO as gpio
 TEST_MODE=False
 
 #PWM/duty cycle for each motor
+PWM_FREQ = 24
 LMOTORSPEED=80
 RMOTORSPEED=78
 
-#lance servo duty cycle determines position
-LANCE_OPEN = 2
+#lance servo duty cycle determines position 2.1, 10.5
+LANCE_OPEN =  2.1
 LANCE_CLOSE = 10.5
 
 # Two motors with two directions each = four GPIO pins
@@ -35,10 +36,7 @@ GPIO_PIN_LEFT_MOTOR_BACKWARD=16
 GPIO_PIN_LEFT_PWM=12
 
 # Step duration in sec
-STEP_DURATION=1
-
-# Turn step in sec
-TURN_STEP=0.1
+STEP_DURATION=0.1
 
 # paulse
 PAUSE=0.5
@@ -82,12 +80,12 @@ gpio.setmode(gpio.BCM)
 gpio.setup(GPIO_PIN_RIGHT_MOTOR_FORWARD, gpio.OUT)
 gpio.setup(GPIO_PIN_RIGHT_MOTOR_BACKWARD, gpio.OUT)
 gpio.setup(GPIO_PIN_RIGHT_PWM, gpio.OUT)
-Rpwm = gpio.PWM(GPIO_PIN_RIGHT_PWM, 20)  # Initialize PWM on pwmPin 20Hz frequency
+Rpwm = gpio.PWM(GPIO_PIN_RIGHT_PWM, PWM_FREQ)  # Initialize PWM on pwmPin 20Hz frequency
 
 gpio.setup(GPIO_PIN_LEFT_MOTOR_FORWARD, gpio.OUT)
 gpio.setup(GPIO_PIN_LEFT_MOTOR_BACKWARD, gpio.OUT)
 gpio.setup(GPIO_PIN_LEFT_PWM, gpio.OUT)
-Lpwm = gpio.PWM(GPIO_PIN_LEFT_PWM, 20)  # Initialize PWM on pwmPin 20Hz frequency
+Lpwm = gpio.PWM(GPIO_PIN_LEFT_PWM, PWM_FREQ)  # Initialize PWM on pwmPin 20Hz frequency
 
 gpio.setup(GPIO_PIN_IR_SENSOR_LEFT, gpio.IN)
 gpio.setup(GPIO_PIN_IR_SENSOR_RIGHT, gpio.IN)
@@ -98,7 +96,7 @@ gpio.setup(GPIO_PIN_SPEED_SENSOR_RIGHT, gpio.IN)
 gpio.setup(GPIO_PIN_LED, gpio.OUT)
 
 gpio.setup(GPIO_PIN_LANCE_SERVO, gpio.OUT)
-lance_servo_pwm = gpio.PWM(GPIO_PIN_LANCE_SERVO, 50)  # Initialize Servo PWM 
+lance_servo_pwm = gpio.PWM(GPIO_PIN_LANCE_SERVO, 50)  # Initialize Servo PWM  50
 
 
 #### Objects ####
@@ -130,17 +128,29 @@ class MARSROVER(object):
             return val
 
 
+    # Get z-axle magnetic field
+    def read_magnet_detector (self):
+        if ( self.testMode ):
+            print ("@read_magnet_detector: Read magnetometer's z axis")
+        else:
+            bus.write_byte_data(HMC5883_ADDRESS, 0, 0b01110000)
+            bus.write_byte_data(HMC5883_ADDRESS, 1, 0b00100000)
+            bus.write_byte_data(HMC5883_ADDRESS, 2, 0b00000000)
+ 
+            scale = 0.92
+
+            #y is new z
+            z_out = self.read_word_2c(7) * scale
+            print("@read_magnet_detector: ", z_out)
+
     # Get Bearing from the magnetometer
     def get_heading(self):
         if ( self.testMode ):
-            print ("+Get hearing")
+            print ("@get_heading: Read magnetometer")
         else:
 
-          #write_byte(0, 0b01110000) # Set to 8 samples @ 15Hz
           bus.write_byte_data(HMC5883_ADDRESS, 0, 0b01110000)
-          #write_byte(1, 0b00100000) # 1.3 gain LSb / Gauss 1090 (default)
           bus.write_byte_data(HMC5883_ADDRESS, 1, 0b00100000)
-          #write_byte(2, 0b00000000) # Continuous sampling
           bus.write_byte_data(HMC5883_ADDRESS, 2, 0b00000000)
  
           scale = 0.92
@@ -168,7 +178,7 @@ class MARSROVER(object):
           if (heading < 0):
             heading += 2 * math.pi
 
-          print("Heading: ", math.degrees(heading))
+          print("@get_heading: ", math.degrees(heading))
 #          print("Heading: ", heading)
           return heading
 
@@ -203,22 +213,6 @@ class MARSROVER(object):
                 #print('Temp={0:0.1f}*F  Humidity={1:0.1f}%'.format(temperature, humidity))
             else:
                 print('@measure_temperature: Failed to get measurement. Try again!')
-
-    # Measure temperature
-    def read_ir_sensor_left(self):
-        if ( self.testMode ):
-            print ("@read_ir_sensor_left")
-        else:
-            print ("@read_ir_sensor_left")
-            sensor_read = gpio.input(GPIO_PIN_IR_SENSOR_LEFT)
-
-            #if (gpio.input(GPIO_PIN_IR_SENSOR_LEFT)):
-            if (sensor_read):
-                print("clear")
-            else:
-                print("something there")
-            #print (sensor_read)
-            return sensor_read
 
     # turn using speed sensor
     def turn_right_using_speed_sensor(self,slots):
@@ -279,7 +273,7 @@ class MARSROVER(object):
 
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
-                Rpwm.start(60)
+                Rpwm.start(RMOTORSPEED)
 
 
             #shutdown motor
@@ -319,20 +313,15 @@ class MARSROVER(object):
                         print("+Abort: Obstacle detected on the right IR sensor")
                         break
 
-                
-                #left_ir_sensor_read = 
-
                 gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_LEFT_MOTOR_BACKWARD, False)
-                #Lpwm.start(100)
                 Lpwm.start(LMOTORSPEED)
 
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
                 Rpwm.start(RMOTORSPEED)
 
-                time.sleep(TURN_STEP)
-                #time.sleep(STEP_DURATION)
+                time.sleep(STEP_DURATION)
 
             #shutdown motor
             gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
@@ -355,7 +344,6 @@ class MARSROVER(object):
         if ( self.testMode ):
             for step in range(0,units):
                 print ("+Go backward")
-                #self._waitStepPreBias()
                 time.sleep(STEP_DURATION)
         else:
             # Turn on the enable pin
@@ -370,8 +358,7 @@ class MARSROVER(object):
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, True)
                 Rpwm.start(RMOTORSPEED)
 
-                time.sleep(TURN_STEP)
-                #time.sleep(STEP_DURATION)
+                time.sleep(STEP_DURATION)
 
             #shutdown motor
             gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
@@ -402,7 +389,7 @@ class MARSROVER(object):
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
                 Rpwm.start(RMOTORSPEED)
 
-                time.sleep(TURN_STEP)
+                time.sleep(STEP_DURATION)
 
             #shutdown motor
             gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
@@ -433,7 +420,7 @@ class MARSROVER(object):
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, True)
                 Rpwm.start(RMOTORSPEED)
 
-                time.sleep(TURN_STEP)
+                time.sleep(STEP_DURATION)
 
             #shutdown motor
             gpio.output(GPIO_PIN_LEFT_MOTOR_FORWARD, False)
@@ -533,7 +520,7 @@ class MARSROVER(object):
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, True)
                 Rpwm.start(100)
 #
-                time.sleep(TURN_STEP)
+                time.sleep(STEP_DURATION)
 
                 current_heading = self.get_heading()
 
@@ -589,8 +576,8 @@ class MARSROVER(object):
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_FORWARD, True)
                 gpio.output(GPIO_PIN_RIGHT_MOTOR_BACKWARD, False)
                 Rpwm.start(100)
-#
-                time.sleep(TURN_STEP)
+
+                time.sleep(STEP_DURATION)
 
                 current_heading = self.get_heading()
 
@@ -702,12 +689,20 @@ class MARSROVER(object):
             camera.close()
 
     def arm_lance (self):
-                lance_servo_pwm.start(LANCE_OPEN)
-                time.sleep(PAUSE)
+        if ( self.testMode ):
+            print ("@arm_lance")
+        else:
+            print ("@arm_lance")
+            lance_servo_pwm.start(LANCE_OPEN)
+            time.sleep(1)
 
     def disarm_lance (self):
-                lance_servo_pwm.start(LANCE_CLOSE)
-                time.sleep(PAUSE)
+        if ( self.testMode ):
+            print ("@disarm_lance")
+        else:
+            print ("@disarm_lance")
+            lance_servo_pwm.start(LANCE_CLOSE)
+            time.sleep(1)
 
 
 
