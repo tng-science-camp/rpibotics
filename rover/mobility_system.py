@@ -16,8 +16,8 @@ class MobilitySystem(object):
             exit(1)
         self._wheel_circumference = 0.021 # meters
         self._instances.append(self)
-        self.motor_right = DCMotor(13, 26, 19, f=20000)
-        self.motor_left = DCMotor(12, 20, 16, f=20000)
+        self.motor_right = DCMotor(13, 26, 19, f=20)
+        self.motor_left = DCMotor(12, 20, 16, f=20)
         self.encoder_right = OptocouplerEncoder(7, s=20)
         self.encoder_right.run()
         self.encoder_left = OptocouplerEncoder(8, s=20)
@@ -25,7 +25,7 @@ class MobilitySystem(object):
         self._stop = True
         self._delta_t = 0.1
 
-    def go_forward(self, rotations, duty_cycle=70, timeout=20):
+    def go_forward(self, rotations, duty_cycle=70, timeout=5):
         start_time = time.time()
         P = 1
         D = 0
@@ -57,6 +57,7 @@ class MobilitySystem(object):
         print("Left   r = {:0.2f}, r_dot = {:0.2f}"
               .format(self.encoder_left.get_rotations(),
               self.encoder_left.get_rotation_rate()))
+        print("Delta_t = {:0.2f}".format(time.time() - start_time))
 
 
 
