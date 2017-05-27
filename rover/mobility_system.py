@@ -38,8 +38,8 @@ class MobilitySystem(object):
             if self.encoder_right.get_rotations() >= rotations or self.encoder_left.get_rotations() >= rotations:
                 self._stop = True
             else:
-                r_diff = numpy.array([self.encoder_right.get_rotations() - self.encoder_left.get_rotations(),
-                                      self.encoder_right.get_rotation_rate() - self.encoder_left.get_rotation_rate()])
+                r_diff = numpy.matrix(((self.encoder_right.get_rotations() - self.encoder_left.get_rotations()),
+                                       (self.encoder_right.get_rotation_rate() - self.encoder_left.get_rotation_rate())))
                 if r_diff_prev is not None:
                     r_diff_dot = (r_diff - r_diff_prev) / self._delta_t
                     u = P * r_diff + D * r_diff_dot
