@@ -28,7 +28,7 @@ class OptocouplerEncoder(object):
         current_time = time.time()
         self._count += 1
         self._rotations = self._count / self._slit_count
-        if math.isnan(self._previous_update_time):
+        if not math.isnan(self._previous_update_time):
             duration = current_time - self._previous_update_time
             self._rotation_rate = 1 / self._slit_count / duration
         self._previous_update_time = current_time
