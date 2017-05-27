@@ -30,7 +30,7 @@ class MobilitySystem(object):
 
     def go_forward(self, rotations, duty_cycle=70, timeout=30, delta_t=0.1):
         start_time = time.time()
-        P = 0.05
+        P = 0.1
         D = 0
         u = numpy.matrix(((0),(0)))
         self._stop = False
@@ -40,7 +40,13 @@ class MobilitySystem(object):
         self.motor_right.turn_counter_clockwise(duty_cycle)
         self.motor_left.turn_counter_clockwise(duty_cycle)
         while not self._stop and time.time() - start_time < timeout:
-            print("t = {:0.2f}".format(time.time()))
+            print("Right  r = {:0.2f}, r_dot = {:0.2f}"
+                  .format(self.encoder_right.get_rotations(),
+                          self.encoder_right.get_rotation_rate()))
+            print("Left   r = {:0.2f}, r_dot = {:0.2f}"
+                  .format(self.encoder_left.get_rotations(),
+                          self.encoder_left.get_rotation_rate()))
+            #print("t = {:0.2f}".format(time.time()))
             if self.encoder_right.get_rotations() >= rotations or self.encoder_left.get_rotations() >= rotations:
                 self._stop = True
             else:
