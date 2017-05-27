@@ -30,7 +30,7 @@ class MobilitySystem(object):
         P = 1
         D = 0
         self._stop = False
-        r_diff_prev = float('nan')
+        r_diff_prev = None
         self.encoder_right.reset()
         self.encoder_left.reset()
         self.motor_right.turn_counter_clockwise(duty_cycle)
@@ -41,7 +41,7 @@ class MobilitySystem(object):
             else:
                 r_diff = numpy.matrix(((self.encoder_right.get_rotations() - self.encoder_left.get_rotations()),
                                        (self.encoder_right.get_rotation_rate() - self.encoder_left.get_rotation_rate())))
-                if not math.isnan(r_diff_prev):
+                if r_diff_prev is not None:
                     r_diff_dot = (r_diff - r_diff_prev) / self._delta_t
                     u = P * r_diff + D * r_diff_dot
                 r_diff_prev = r_diff
