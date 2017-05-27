@@ -28,10 +28,8 @@ class MobilitySystem(object):
         self.motor_left.stop()
         self.motor_right.stop()
 
-    def go_forward(self, rotations, duty_cycle=70, timeout=30, delta_t=0.1):
+    def go_forward(self, rotations, duty_cycle=70, timeout=30, delta_t=0.1, P=0.1, I=0.0, D=0.0):
         start_time = time.time()
-        P = 0.1
-        D = 0
         u = numpy.matrix(((0),(0)))
         self._stop = False
         r_diff_prev = None
