@@ -29,10 +29,12 @@ class MobilitySystem(object):
         self._stop = False
         r_diff_prev = None
         self.encoder_right.reset()
+        self.encoder_right.run()
         self.encoder_left.reset()
-        self.motor_right.turn_counter_clockwise()
-        self.motor_left.turn_counter_clockwise()
-        while not self._stop and time.time() - start_time < timeout:
+        self.encoder_left.run()
+        self.motor_right.turn_counter_clockwise(duty_cycle = 60)
+        self.motor_left.turn_counter_clockwise(duty_cycle = 60)
+        while not self._stop or time.time() - start_time < timeout:
             if self.encoder_right.get_rotations() >= rotations or self.encoder_left.get_rotations() >= rotations:
                 self._stop = True
             elif r_diff_prev is not None:
