@@ -32,8 +32,8 @@ class MobilitySystem(object):
         self.encoder_right.run()
         self.encoder_left.reset()
         self.encoder_left.run()
-        self.motor_right.turn_counter_clockwise(duty_cycle = 60)
-        self.motor_left.turn_counter_clockwise(duty_cycle = 60)
+        self.motor_right.turn_counter_clockwise(duty_cycle = 70)
+        self.motor_left.turn_counter_clockwise(duty_cycle = 70)
         while not self._stop or time.time() - start_time < timeout:
             if self.encoder_right.get_rotations() >= rotations or self.encoder_left.get_rotations() >= rotations:
                 self._stop = True
@@ -42,7 +42,13 @@ class MobilitySystem(object):
                                       self.encoder_right.get_rotation_rate() - self.encoder_left.get_rotation_rate()])
                 r_diff_dot = (r_diff - r_diff_prev) / self._delta_t
                 u = P * r_diff + D * r_diff_dot
-            r_diff_prev = r_diff
+                r_diff_prev = r_diff
+                print("Right  r = %f, r_dot = %f",
+                      self.encoder_right.get_rotations(),
+                      self.encoder_right.get_rotation_rate())
+                print("Left   r = %f, r_dot = %f",
+                      self.encoder_left.get_rotations(),
+                      self.encoder_left.get_rotation_rate())
             time.sleep(self._delta_t)
         self.motor_left.stop()
         self.motor_right.stop()
