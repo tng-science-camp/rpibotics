@@ -3,6 +3,7 @@
 """
 import RPi.GPIO as GPIO
 import time
+import math
 
 GPIO.setmode(GPIO.BCM)
 
@@ -19,15 +20,15 @@ class OptocouplerEncoder(object):
     def reset(self):
         self._count = 0
         self._rotations = 0
-        self._rotation_rate = None
-        self._previous_update_time = None
+        self._rotation_rate = float('nan')
+        self._previous_update_time = float('nan')
 
     def update_on_change(self, gpio_pin):
         assert self._gpio_pin == gpio_pin
         current_time = time.time()
         self._count += 1
         self._rotations = self._count / self._slit_count
-        if self._previous_update_time is not None:
+        if math.isnan(self._previous_update_time):
             duration = current_time - self._previous_update_time
             self._rotation_rate = 1 / self._slit_count / duration
         self._previous_update_time = current_time
