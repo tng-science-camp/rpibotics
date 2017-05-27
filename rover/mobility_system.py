@@ -37,14 +37,16 @@ class MobilitySystem(object):
         while not self._stop or time.time() - start_time < timeout:
             if self.encoder_right.get_rotations() >= rotations or self.encoder_left.get_rotations() >= rotations:
                 self._stop = True
-            elif r_diff_prev is not None:
+            else:
                 r_diff = numpy.array([self.encoder_right.get_rotations() - self.encoder_left.get_rotations(),
                                       self.encoder_right.get_rotation_rate() - self.encoder_left.get_rotation_rate()])
-                r_diff_dot = (r_diff - r_diff_prev) / self._delta_t
-                u = P * r_diff + D * r_diff_dot
-                r_diff_prev = r_diff
+                if r_diff_prev is not None:
+                    r_diff_dot = (r_diff - r_diff_prev) / self._delta_t
+                    u = P * r_diff + D * r_diff_dot
+                    r_diff_prev = r_diff
                 print("Right  r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_right.get_rotations(), self.encoder_right.get_rotation_rate()))
                 print("Left   r = {:0.2f}, r_dot = {:0.2f}".format(self.encoder_left.get_rotations()), self.encoder_left.get_rotation_rate())
+
             time.sleep(self._delta_t)
         self.motor_left.stop()
         self.motor_right.stop()
@@ -52,8 +54,8 @@ class MobilitySystem(object):
               .format(self.encoder_right.get_rotations(),
               self.encoder_right.get_rotation_rate()))
         print("Left   r = {:0.2f}, r_dot = {:0.2f}"
-              .format(self.encoder_left.get_rotations()),
-              self.encoder_left.get_rotation_rate())
+              .format(self.encoder_left.get_rotations(),
+              self.encoder_left.get_rotation_rate()))
 
 
 
