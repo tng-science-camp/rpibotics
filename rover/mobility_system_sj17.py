@@ -64,8 +64,8 @@ class MobilitySystem(object):
             else:
                 e0 = e1
                 e1 = e2
-                e2 = numpy.matrix([[rotations[0, 0] - rotations[1, 0]],
-                                   [rotations[1, 0] - rotations[0, 0]]]) / 2
+                e2 = numpy.matrix([[rotations[1, 0] - rotations[0, 0]],
+                                   [rotations[0, 0] - rotations[1, 0]]]) / 2
                 u2 += self._pid.control_delta(e0, e1, e2, delta_t)
                 u2[u2 > 100] = 100.0
                 u2[u2 < 30] = 30.0
