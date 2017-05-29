@@ -13,6 +13,8 @@ class OptocouplerEncoder(object):
         self._gpio_pin = gpio_pin
         self.reset()
         GPIO.setup(self._gpio_pin, GPIO.IN)
+        GPIO.add_event_detect(self._gpio_pin,GPIO.RISING, callback=self.update_on_change)
+
 
     def __del__(self):
         GPIO.cleanup((self._gpio_pin))
@@ -32,9 +34,6 @@ class OptocouplerEncoder(object):
             duration = current_time - self._previous_update_time
             self._rotation_rate = 1 / self._slit_count / duration
         self._previous_update_time = current_time
-
-    def run(self):
-        GPIO.add_event_detect(self._gpio_pin,GPIO.RISING, callback=self.update_on_change)
 
     def get_rotations(self):
         return self._rotations
