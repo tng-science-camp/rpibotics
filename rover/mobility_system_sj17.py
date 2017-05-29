@@ -15,7 +15,7 @@ class MobilitySystem(object):
             print("ERROR: You can't have more than one mobility system.")
             exit(1)
         self._wheel_circumference = numpy.pi * 0.065  # [meter]
-        self._wheel_distance = numpy.pi * 0.14        # [meter]
+        self._wheel_distance = numpy.pi * 0.125       # [meter]
         self._instances.append(self)
         self.motor_left = DCMotor(12, 20, 16, f=20)
         self.motor_right = DCMotor(13, 26, 19, f=20)
@@ -97,13 +97,12 @@ class MobilitySystem(object):
         while not self._stop and time.time() - start_time < timeout:
             print("Rotations = {}".format(
                 numpy.array2string(rotations).replace('\n', '')))
-            if numpy.any(numpy.greater_equal(rotations, target_rotations)):
+            if numpy.all(numpy.greater_equal(rotations, target_rotations)):
                 self._stop = True
             else:
                 e0 = e1
                 e1 = e2
-                e2 = numpy.matrix([[rotations[1, 0] - rotations[0, 0]],
-                                   [rotations[0, 0] - rotations[1, 0]]]) / 2
+                e2 = target_rotations - rotations
                 control_delta = self._pid.control_delta(e0, e1, e2, delta_t)
                 u2 += control_delta
                 u2[u2 > 100] = 100.0
