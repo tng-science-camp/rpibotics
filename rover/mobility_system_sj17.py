@@ -34,8 +34,6 @@ class MobilitySystem(object):
     def initialize(self):
         self.stop()
         self.reset()
-        self.encoder_left.run()
-        self.encoder_right.run()
 
     def go_forward(self, target_distance, duty_cycle=70, timeout=30,
                    delta_t=0.1):
