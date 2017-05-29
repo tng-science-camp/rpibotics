@@ -15,7 +15,7 @@ class MobilitySystem(object):
             print("ERROR: You can't have more than one mobility system.")
             exit(1)
         self._wheel_circumference = numpy.pi * 0.065  # [meter]
-        self._wheel_distance = numpy.pi * 0.108       # [meter]
+        self._wheel_distance = numpy.pi * 0.10        # [meter]
         self._instances.append(self)
         self.motor_left = DCMotor(12, 20, 16, f=20)
         self.motor_right = DCMotor(13, 26, 19, f=20)
@@ -77,13 +77,12 @@ class MobilitySystem(object):
         return distance, drive_time
 
     def turn_right(self, target_angle: float=90.0, duty_cycle: float=70.0,
-                   timeout: float=30, delta_t: float=0.1):
+                   timeout: float=30, delta_t: float=0.001):
         start_time = time.time()
 
         target_rotations = numpy.ones((2, 1)) * \
                            self._wheel_distance / (360.0 / target_angle) / \
                            self._wheel_circumference
-        print("Target Rotations = {}".format(numpy.array2string(target_rotations).replace('\n', '')))
         self.initialize()
         self._stop = False
 
