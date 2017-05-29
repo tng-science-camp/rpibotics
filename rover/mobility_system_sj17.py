@@ -3,6 +3,7 @@ import time
 from rover.dc_motor import DCMotor
 from rover.optocoupler_encoder import OptocouplerEncoder
 from rover.pid import PID
+from rover.ir_obstacle_sensor import IRObstacleSensor
 
 
 class MobilitySystem(object):
@@ -21,12 +22,16 @@ class MobilitySystem(object):
         self.motor_right = DCMotor(13, 26, 19, f=20)
         self.encoder_left = OptocouplerEncoder(8, s=20)
         self.encoder_right = OptocouplerEncoder(7, s=20)
+        self.obstacle_sensor_left = IRObstacleSensor(17)
+        self.obstacle_sensor_right = IRObstacleSensor(27)
         self._pid = PID(kp=300.0, ki=50.0, kd=20.0)
         self._stop = True
 
     def stop(self):
         self.motor_left.stop()
         self.motor_right.stop()
+        self.obstacle_sensor_left.clear_detect_callbacks()
+        self.obstacle_sensor_right.clear_detect_callbacks()
 
     def reset(self):
         self.encoder_left.reset()
@@ -35,6 +40,8 @@ class MobilitySystem(object):
     def initialize(self):
         self.stop()
         self.reset()
+        self.obstacle_sensor_left.add_detect_callback(self.stop)
+        self.obstacle_sensor_right.add_detect_callback(self.stop)
 
     def go_forward(self, target_distance: float=0.3, duty_cycle: float=70.0,
                    timeout: float=30, delta_t: float=0.1):
