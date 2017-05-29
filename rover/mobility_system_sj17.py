@@ -28,14 +28,15 @@ class MobilitySystem(object):
         self._stop = True
 
     def stop(self):
+        self._stop = True
         self.motor_left.stop()
         self.motor_right.stop()
-        self.obstacle_sensor_left.clear_detect_callbacks()
-        self.obstacle_sensor_right.clear_detect_callbacks()
 
     def reset(self):
         self.encoder_left.reset()
         self.encoder_right.reset()
+        self.obstacle_sensor_left.clear_detect_callbacks()
+        self.obstacle_sensor_right.clear_detect_callbacks()
 
     def initialize(self):
         self.stop()
