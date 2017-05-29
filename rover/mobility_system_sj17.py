@@ -64,12 +64,12 @@ class MobilitySystem(object):
                 u2 += self._pid.control_delta(e0, e1, e2, delta_t)
                 u2[u2 > 100] = 100.0
                 u2[u2 < 30] = 30.0
-            self.motor_left.turn_clockwise(u2[0, 0])
-            self.motor_right.turn_clockwise(u2[1, 0])
-            time.sleep(delta_t)
-            rotations = numpy.matrix(
-                [[self.encoder_left.get_rotations()],
-                 [self.encoder_right.get_rotations()]])
+                self.motor_left.turn_clockwise(u2[0, 0])
+                self.motor_right.turn_clockwise(u2[1, 0])
+                time.sleep(delta_t)
+                rotations = numpy.matrix(
+                    [[self.encoder_left.get_rotations()],
+                     [self.encoder_right.get_rotations()]])
 
         self.stop()
         distance = rotations * self._wheel_circumference
@@ -108,14 +108,14 @@ class MobilitySystem(object):
                 u2 += control_delta
                 u2[u2 > 100] = 100.0
                 u2[u2 < 30] = 30.0
-            print("Duty Cycle = {}".format(
-                numpy.array2string(u2).replace('\n', '')))
-            self.motor_left.turn_clockwise(u2[0, 0])
-            self.motor_right.turn_counter_clockwise(u2[1, 0])
-            time.sleep(delta_t)
-            rotations = numpy.matrix(
-                [[self.encoder_left.get_rotations()],
-                 [self.encoder_right.get_rotations()]])
+                print("Duty Cycle = {}".format(
+                    numpy.array2string(u2).replace('\n', '')))
+                self.motor_left.turn_clockwise(u2[0, 0])
+                self.motor_right.turn_counter_clockwise(u2[1, 0])
+                time.sleep(delta_t)
+                rotations = numpy.matrix(
+                    [[self.encoder_left.get_rotations()],
+                     [self.encoder_right.get_rotations()]])
 
         self.stop()
         distance = rotations * self._wheel_circumference
