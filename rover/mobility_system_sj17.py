@@ -44,18 +44,38 @@ class MobilitySystem(object):
         self.obstacle_sensor_left.add_detect_callback(self.stop)
         self.obstacle_sensor_right.add_detect_callback(self.stop)
 
+    def front_is_blocked(self):
+        return self.obstacle_sensor_left.obstacle_is_in_front() or \
+               self.obstacle_sensor_right.obstacle_is_in_front()
+
     def go_forward(self, target_distance: float=0.3, duty_cycle: float=70.0,
                    timeout: float=30, delta_t: float=0.01):
-        self.go_straight(target_distance=target_distance,
-                         direction_is_forward=True,
+        return self.go_straight(target_distance=target_distance,
+                                direction_is_forward=True,
+                                duty_cycle=duty_cycle,
+                                timeout=timeout,
+                                delta_t=delta_t)
+
+    def go_backward(self, target_distance: float=0.3, duty_cycle: float=70.0,
+                   timeout: float=5, delta_t: float=0.01):
+        return self.go_straight(target_distance=target_distance,
+                                direction_is_forward=False,
+                                duty_cycle=duty_cycle,
+                                timeout=timeout,
+                                delta_t=delta_t)
+
+    def turn_right(self, target_angle: float=90.0, duty_cycle: float=70.0,
+                   timeout: float=30, delta_t: float=0.001):
+        return self.turn(target_angle=target_angle,
+                         direction_is_right=True,
                          duty_cycle=duty_cycle,
                          timeout=timeout,
                          delta_t=delta_t)
 
-    def go_backward(self, target_distance: float=0.3, duty_cycle: float=70.0,
-                   timeout: float=5, delta_t: float=0.01):
-        self.go_straight(target_distance=target_distance,
-                         direction_is_forward=False,
+    def turn_left(self, target_angle: float=90.0, duty_cycle: float=70.0,
+                   timeout: float=30, delta_t: float=0.001):
+        return self.turn(target_angle=target_angle,
+                         direction_is_right=False,
                          duty_cycle=duty_cycle,
                          timeout=timeout,
                          delta_t=delta_t)
@@ -102,10 +122,13 @@ class MobilitySystem(object):
                     [[self.encoder_left.get_rotations()],
                      [self.encoder_right.get_rotations()]])
         self.stop()
+        distance = rotations * self._wheel_circumference
+        drive_time = time.time() - start_time
+        return distance, drive_time
 
-
-    def turn_right(self, target_angle: float=90.0, duty_cycle: float=70.0,
-                   timeout: float=30, delta_t: float=0.001):
+    def turn(self, target_angle: float=90.0, direction_is_right: bool=True,
+             duty_cycle: float=70.0,
+             timeout: float=30, delta_t: float=0.001):
         start_time = time.time()
 
         target_rotations = numpy.ones((2, 1)) * \
@@ -143,8 +166,12 @@ class MobilitySystem(object):
                 u2[u2 < 0] = 0.0
                 print("Duty Cycle = {}".format(
                     numpy.array2string(u2).replace('\n', '')))
-                self.motor_left.turn_clockwise(u2[0, 0])
-                self.motor_right.turn_counter_clockwise(u2[1, 0])
+                if direction_is_right:
+                    self.motor_left.turn_clockwise(u2[0, 0])
+                    self.motor_right.turn_counter_clockwise(u2[1, 0])
+                else:
+                    self.motor_left.turn_counter_clockwise(u2[0, 0])
+                    self.motor_right.turn_clockwise(u2[1, 0])
                 time.sleep(delta_t)
                 rotations = numpy.matrix(
                     [[self.encoder_left.get_rotations()],
