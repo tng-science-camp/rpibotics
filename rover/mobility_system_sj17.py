@@ -1,8 +1,8 @@
 import numpy
-import math
 import time
 from rover.dc_motor import DCMotor
 from rover.optocoupler_encoder import OptocouplerEncoder
+from rover.pid import PID
 
 
 class MobilitySystem(object):
@@ -14,65 +14,67 @@ class MobilitySystem(object):
         if len(self._instances) > 1:
             print("ERROR: You can't have more than one mobility system.")
             exit(1)
-        self._wheel_circumference = 0.021 # meters
+        self._wheel_circumference = numpy.pi * 0.065  # [meters]
         self._instances.append(self)
-        self.motor_right = DCMotor(13, 26, 19, f=20)
         self.motor_left = DCMotor(12, 20, 16, f=20)
-        self.encoder_right = OptocouplerEncoder(7, s=20)
-        self.encoder_right.run()
+        self.motor_right = DCMotor(13, 26, 19, f=20)
         self.encoder_left = OptocouplerEncoder(8, s=20)
-        self.encoder_left.run()
+        self.encoder_right = OptocouplerEncoder(7, s=20)
+        self._pid = PID(kp=5.0, ki=0.1, kd=0.1)
         self._stop = True
 
     def stop(self):
         self.motor_left.stop()
         self.motor_right.stop()
 
-    def go_forward(self, rotations, duty_cycle=70, timeout=30, delta_t=0.1, P=0.1, I=0.0, D=0.0):
-        start_time = time.time()
-        u = numpy.matrix(((0),(0)))
-        d_right = duty_cycle
-        d_left = duty_cycle
-        self._stop = False
-        r_diff_prev = None
-        self.encoder_right.reset()
+    def reset(self):
         self.encoder_left.reset()
-        self.motor_right.turn_clockwise(duty_cycle)
-        self.motor_left.turn_clockwise(duty_cycle)
+        self.encoder_right.reset()
+
+    def initialize(self):
+        self.stop()
+        self.reset()
+        self.encoder_left.run()
+        self.encoder_right.run()
+
+    def go_forward(self, target_distance, duty_cycle=70, timeout=30,
+                   delta_t=0.1):
+        start_time = time.time()
+
+        target_rotations = numpy.ones((2, 1)) * \
+                           target_distance / self._wheel_circumference
+        self.initialize()
+        self._stop = False
+
+        u2 = numpy.matrix([[duty_cycle], [duty_cycle]])
+        e2 = numpy.matrix([[0], [0]])
+        e1 = numpy.matrix([[0], [0]])
+
+        rotations = numpy.matrix(
+            [[self.encoder_left.get_rotations()],
+             [self.encoder_right.get_rotations()]])
+        rotation_rate = numpy.matrix(
+            [[self.encoder_left.get_rotation_rate()],
+             [self.encoder_right.get_rotation_rate()]])
         while not self._stop and time.time() - start_time < timeout:
-            print("Right  r = {:0.2f}, r_dot = {:0.2f}"
-                  .format(self.encoder_right.get_rotations(),
-                          self.encoder_right.get_rotation_rate()))
-            print("Left   r = {:0.2f}, r_dot = {:0.2f}"
-                  .format(self.encoder_left.get_rotations(),
-                          self.encoder_left.get_rotation_rate()))
-            #print("t = {:0.2f}".format(time.time()))
-            if self.encoder_right.get_rotations() >= rotations or self.encoder_left.get_rotations() >= rotations:
+            print("Rotations = {}".format(
+                numpy.array2string(rotations).replace('\n', '')))
+            print("Rotations = {}".format(
+                numpy.array2string(rotation_rate).replace('\n', '')))
+            if numpy.any(numpy.greater_equal(rotations, target_rotations)):
                 self._stop = True
             else:
-                r_diff = numpy.matrix(((self.encoder_right.get_rotations() - self.encoder_left.get_rotations()),
-                                       (self.encoder_right.get_rotation_rate() - self.encoder_left.get_rotation_rate())))
-                if r_diff_prev is not None:
-                    r_diff_dot = (r_diff - r_diff_prev) / delta_t
-                    u = P * r_diff + D * r_diff_dot
-                r_diff_prev = r_diff
-            d_right = max(d_right - 50 * u[0, 0], 0)
-            d_right = min(d_right, 100)
-            d_left = max(d_left + 50 * u[0, 0], 0)
-            d_left = min(d_left, 100)
-            print("d_r = {:0.2f} d_l = {:0.2f}".format(d_right, d_left))
-            self.motor_right.turn_clockwise(d_right)
-            self.motor_left.turn_clockwise(d_left)
+                e0 = e1
+                e1 = e2
+                e2 = numpy.ones((2, 1)) * \
+                     (rotations[0, 0] - rotations[1, 0]) / 2
+                u2 += self._pid.control_delta(e0, e1, e2, delta_t)
+            print("u = {}".format(numpy.array2string(u2).replace('\n', '')))
+            self.motor_left.turn_clockwise(u2[0, 0])
+            self.motor_right.turn_clockwise(u2[1, 0])
             time.sleep(delta_t)
 
         self.stop()
-        print("Right  r = {:0.2f}, r_dot = {:0.2f}"
-              .format(self.encoder_right.get_rotations(),
-              self.encoder_right.get_rotation_rate()))
-        print("Left   r = {:0.2f}, r_dot = {:0.2f}"
-              .format(self.encoder_left.get_rotations(),
-              self.encoder_left.get_rotation_rate()))
-        print("Delta_t = {:0.2f}".format(time.time() - start_time))
-
-
-
+        distance = rotations * self._wheel_circumference
+        drive_time = time.time() - start_time
+        return distance, drive_time
