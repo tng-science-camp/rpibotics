@@ -35,8 +35,8 @@ class MobilitySystem(object):
         self.stop()
         self.reset()
 
-    def go_forward(self, target_distance, duty_cycle=70, timeout=30,
-                   delta_t=0.1):
+    def go_forward(self, target_distance: float, duty_cycle: float=70.0,
+                   timeout: float=30, delta_t: float=0.1):
         start_time = time.time()
 
         target_rotations = numpy.ones((2, 1)) * \
@@ -52,13 +52,8 @@ class MobilitySystem(object):
             rotations = numpy.matrix(
                 [[self.encoder_left.get_rotations()],
                  [self.encoder_right.get_rotations()]])
-            rotation_rate = numpy.matrix(
-                [[self.encoder_left.get_rotation_rate()],
-                 [self.encoder_right.get_rotation_rate()]])
             print("Rotations = {}".format(
                 numpy.array2string(rotations).replace('\n', '')))
-            print("Rotations = {}".format(
-                numpy.array2string(rotation_rate).replace('\n', '')))
             if numpy.any(numpy.greater_equal(rotations, target_rotations)):
                 self._stop = True
             else:
@@ -66,7 +61,11 @@ class MobilitySystem(object):
                 e1 = e2
                 e2 = numpy.matrix([[rotations[1, 0] - rotations[0, 0]],
                                    [rotations[0, 0] - rotations[1, 0]]]) / 2
-                u2 += self._pid.control_delta(e0, e1, e2, delta_t)
+                control_delta = self._pid.control_delta(e0, e1, e2, delta_t)
+                print("control_delta = {}".format(
+                    numpy.array2string(control_delta).replace('\n', '')))
+
+                u2 += control_delta
                 u2[u2 > 100] = 100.0
                 u2[u2 < 30] = 30.0
             print("u = {}".format(numpy.array2string(u2).replace('\n', '')))
