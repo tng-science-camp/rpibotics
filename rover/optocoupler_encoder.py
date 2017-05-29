@@ -7,14 +7,18 @@ import math
 
 GPIO.setmode(GPIO.BCM)
 
+
 class OptocouplerEncoder(object):
     def __init__(self, gpio_pin, s=20):
         self._slit_count = s
         self._gpio_pin = gpio_pin
-        self.reset()
+        self._count = 0
+        self._rotations = 0
+        self._rotation_rate = float('nan')
+        self._previous_update_time = float('nan')
         GPIO.setup(self._gpio_pin, GPIO.IN)
-        GPIO.add_event_detect(self._gpio_pin,GPIO.RISING, callback=self.update_on_change)
-
+        GPIO.add_event_detect(self._gpio_pin, GPIO.RISING,
+                              callback=self.update_on_change)
 
     def __del__(self):
         GPIO.cleanup((self._gpio_pin))
