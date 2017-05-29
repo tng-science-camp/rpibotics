@@ -37,8 +37,8 @@ class MobilitySystem(object):
         r_diff_prev = None
         self.encoder_right.reset()
         self.encoder_left.reset()
-        self.motor_right.turn_counter_clockwise(duty_cycle)
-        self.motor_left.turn_counter_clockwise(duty_cycle)
+        self.motor_right.turn_clockwise(duty_cycle)
+        self.motor_left.turn_clockwise(duty_cycle)
         while not self._stop and time.time() - start_time < timeout:
             print("Right  r = {:0.2f}, r_dot = {:0.2f}"
                   .format(self.encoder_right.get_rotations(),
@@ -56,11 +56,13 @@ class MobilitySystem(object):
                     r_diff_dot = (r_diff - r_diff_prev) / delta_t
                     u = P * r_diff + D * r_diff_dot
                 r_diff_prev = r_diff
-            d_right = d_right * (1.0 - u[0, 0])
-            d_left = d_left * (1.0 + u[0, 1])
+            d_right = max(d_right - 50 * u[0, 0], 0)
+            d_right = min(d_right, 100)
+            d_left = max(d_left + 50 * u[0, 0], 0)
+            d_left = min(d_left, 100)
             print("d_r = {:0.2f} d_l = {:0.2f}".format(d_right, d_left))
-            self.motor_right.turn_counter_clockwise(d_right)
-            self.motor_left.turn_counter_clockwise(d_left)
+            self.motor_right.turn_clockwise(d_right)
+            self.motor_left.turn_clockwise(d_left)
             time.sleep(delta_t)
 
         self.stop()
