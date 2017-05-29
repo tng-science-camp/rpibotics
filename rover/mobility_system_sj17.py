@@ -18,8 +18,8 @@ class MobilitySystem(object):
         self._wheel_circumference = numpy.pi * 0.065  # [meter]
         self._wheel_distance = numpy.pi * 0.125       # [meter]
         self._instances.append(self)
-        self.motor_left = DCMotor(12, 20, 16, f=20)
-        self.motor_right = DCMotor(13, 26, 19, f=20)
+        self.motor_left = DCMotor(12, 20, 16, f=100)
+        self.motor_right = DCMotor(13, 26, 19, f=100)
         self.encoder_left = OptocouplerEncoder(8, s=20)
         self.encoder_right = OptocouplerEncoder(7, s=20)
         self.obstacle_sensor_left = IRObstacleSensor(17)
@@ -45,7 +45,26 @@ class MobilitySystem(object):
         self.obstacle_sensor_right.add_detect_callback(self.stop)
 
     def go_forward(self, target_distance: float=0.3, duty_cycle: float=70.0,
-                   timeout: float=30, delta_t: float=0.1):
+                   timeout: float=30, delta_t: float=0.01):
+        self.go_straight(target_distance=target_distance,
+                         direction_is_forward=True,
+                         duty_cycle=duty_cycle,
+                         timeout=timeout,
+                         delta_t=delta_t)
+
+    def go_backward(self, target_distance: float=0.3, duty_cycle: float=70.0,
+                   timeout: float=5, delta_t: float=0.01):
+        self.go_straight(target_distance=target_distance,
+                         direction_is_forward=False,
+                         duty_cycle=duty_cycle,
+                         timeout=timeout,
+                         delta_t=delta_t)
+
+    def go_straight(self,
+                    target_distance: float=0.3,
+                    direction_is_forward: bool=True,
+                    duty_cycle: float=70.0,
+                    timeout: float=30, delta_t: float=0.01):
         start_time = time.time()
 
         target_rotations = numpy.ones((2, 1)) * \
@@ -72,17 +91,18 @@ class MobilitySystem(object):
                 u2 += self._pid.control_delta(e0, e1, e2, delta_t)
                 u2[u2 > 100] = 100.0
                 u2[u2 < 30] = 30.0
-                self.motor_left.turn_clockwise(u2[0, 0])
-                self.motor_right.turn_clockwise(u2[1, 0])
+                if direction_is_forward:
+                    self.motor_left.turn_clockwise(u2[0, 0])
+                    self.motor_right.turn_clockwise(u2[1, 0])
+                else:
+                    self.motor_left.turn_counter_clockwise(u2[0, 0])
+                    self.motor_right.turn_counter_clockwise(u2[1, 0])
                 time.sleep(delta_t)
                 rotations = numpy.matrix(
                     [[self.encoder_left.get_rotations()],
                      [self.encoder_right.get_rotations()]])
-
         self.stop()
-        distance = rotations * self._wheel_circumference
-        drive_time = time.time() - start_time
-        return distance, drive_time
+
 
     def turn_right(self, target_angle: float=90.0, duty_cycle: float=70.0,
                    timeout: float=30, delta_t: float=0.001):
