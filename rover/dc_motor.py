@@ -10,7 +10,7 @@ GPIO.setmode(GPIO.BCM)
 
 class DCMotor(object):
 
-    def __init__(self, ena, in1, in2, f=20):
+    def __init__(self, ena, in1, in2, f=20000):
         self._ena = ena
         self._in1 = in1
         self._in2 = in2
