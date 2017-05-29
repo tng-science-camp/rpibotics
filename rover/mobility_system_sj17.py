@@ -83,6 +83,9 @@ class MobilitySystem(object):
         target_rotations = numpy.ones((2, 1)) * \
                            self._wheel_distance / (360.0 / target_angle) / \
                            self._wheel_circumference
+        print("Target Rotations = {}".format(
+            numpy.array2string(target_rotations).replace('\n', '')))
+
         self.initialize()
         self._stop = False
 
@@ -103,6 +106,8 @@ class MobilitySystem(object):
                 e0 = e1
                 e1 = e2
                 e2 = target_rotations - rotations
+                print("Error = {}".format(
+                    numpy.array2string(e2).replace('\n', '')))
                 control_delta = self._pid.control_delta(e0, e1, e2, delta_t)
                 u2 += control_delta
                 u2[u2 > 100] = 100.0
