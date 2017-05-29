@@ -44,9 +44,9 @@ class MobilitySystem(object):
         self.initialize()
         self._stop = False
 
-        u2 = numpy.matrix([[duty_cycle], [duty_cycle]])
-        e2 = numpy.matrix([[0], [0]])
-        e1 = numpy.matrix([[0], [0]])
+        u2 = float(duty_cycle) * numpy.ones((2, 1))
+        e2 = numpy.matrix([[0.0], [0.0]])
+        e1 = numpy.matrix([[0.0], [0.0]])
 
         while not self._stop and time.time() - start_time < timeout:
             rotations = numpy.matrix(
