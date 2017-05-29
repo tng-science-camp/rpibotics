@@ -11,7 +11,7 @@ class IRObstacleSensor(object):
         self._gpio_pin = pin
         GPIO.setup(self._gpio_pin, GPIO.IN)
         GPIO.add_event_detect(self._gpio_pin, GPIO.FALLING,
-                              callback=self._execute_on_obstacle_detection())
+                              callback=self._execute_on_obstacle_detection)
         self._on_detect_callbacks = list()
 
     def __del__(self):
