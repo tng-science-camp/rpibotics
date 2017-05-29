@@ -1,8 +1,7 @@
-import RPi.GPIO as GPIO
-from rover.dc_motor import DCMotor
-import picamera
+import time
+from rover.mobility_system_sj17 import MobilitySystem
 import picamera.array
-from rover import image_processor
+#from rover import image_processor
 
 
 class RoverSJ17(object):
@@ -15,23 +14,43 @@ class RoverSJ17(object):
             print("ERROR: You can't have more than one Rover instance.")
             exit(1)
         self._instances.append(self)
-        self.motor1 = DCMotor(13, 26, 19)
-        self.motor2 = DCMotor(12, 20, 16)
-        self.camera = picamera.PiCamera()
-        self.camera.vflip = True
-        self.camera.hflip = True
+        self._image_folder = "/var/www/html/rover_img/"
+        self.mobility_system = MobilitySystem()
 
-    def __del__(self):
-        GPIO.cleanup()
+    def capture_image(self,
+                      resolution=(1280, 720), iso=None, shutter_speed=None):
+        image_path = self._image_folder + \
+                     time.strftime("%Y%m%d-%H%M-%S") + '.jpg'
+        with picamera.PiCamera(resolution=resolution) as camera:
+            camera.vflip = True
+            camera.hflip = True
+            if iso is not None:
+                camera.iso = iso
+            if shutter_speed is not None:
+                camera.shutter_speed = shutter_speed
+            time.sleep(2)
+            camera.capture(image_path)
+            print("@capture_image: Take photo and save it as " + image_path)
 
-    def capture_image(self, stream, resolution=(640, 480), format='jpeg'):
-        camera.resolution = resolution
-        camera.capture(stream, format, resize=resolution)
+    def front_is_blocked(self):
+        return self.mobility_system.front_is_blocked()
 
-    def find_blue_object(self):
-        hsv_lower_range = image_processor.BLUE_HSV_LOWER_RANGE
-        hsv_upper_range = image_processor.BLUE_HSV_UPPER_RANGE
-        with picamera.array.PiRGBArray(camera, size=(640, 480)) as stream:
-            self.capture_image(stream, format='bgr')
-            return image_processor.find_colored_object_bearing(
-                stream, hsv_lower_range, hsv_upper_range)
+    def go_forward(self, target_distance: float = 0.3):
+        return self.mobility_system.go_forward(target_distance=target_distance)
+
+    def go_backward(self, target_distance: float = 0.3):
+        return self.mobility_system.go_forward(target_distance=target_distance)
+
+    def turn_right(self, target_angle: float = 90.0):
+        return self.mobility_system.turn_right(target_angle=target_angle)
+
+    def turn_left(self, target_angle: float = 90.0):
+        return self.mobility_system.turn_left(target_angle=target_angle)
+
+    # def find_blue_object(self):
+    #     hsv_lower_range = image_processor.BLUE_HSV_LOWER_RANGE
+    #     hsv_upper_range = image_processor.BLUE_HSV_UPPER_RANGE
+    #     with picamera.array.PiRGBArray(camera, size=(640, 480)) as stream:
+    #         self.capture_image(stream, format='bgr')
+    #         return image_processor.find_colored_object_bearing(
+    #             stream, hsv_lower_range, hsv_upper_range)
