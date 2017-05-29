@@ -95,7 +95,7 @@ class MobilitySystem(object):
              [self.encoder_right.get_rotations()]])
 
         while not self._stop and time.time() - start_time < timeout:
-            print("Target Rotations = {}".format(
+            print("Rotations = {}".format(
                 numpy.array2string(rotations).replace('\n', '')))
             if numpy.any(numpy.greater_equal(rotations, target_rotations)):
                 self._stop = True
@@ -108,6 +108,8 @@ class MobilitySystem(object):
                 u2 += control_delta
                 u2[u2 > 100] = 100.0
                 u2[u2 < 30] = 30.0
+            print("Duty Cycle = {}".format(
+                numpy.array2string(u2).replace('\n', '')))
             self.motor_left.turn_clockwise(u2[0, 0])
             self.motor_right.turn_counter_clockwise(u2[1, 0])
             time.sleep(delta_t)
