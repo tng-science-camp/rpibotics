@@ -96,7 +96,9 @@ class MobilitySystem(object):
              [self.encoder_right.get_rotations()]])
 
         while not self._stop and time.time() - start_time < timeout:
-            if numpy.all(numpy.greater_equal(rotations, target_rotations)):
+            print("Target Rotations = {}".format(
+                numpy.array2string(rotations).replace('\n', '')))
+            if numpy.any(numpy.greater_equal(rotations, target_rotations)):
                 self._stop = True
             else:
                 e0 = e1
