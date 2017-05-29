@@ -105,13 +105,14 @@ class MobilitySystem(object):
             else:
                 e0 = e1
                 e1 = e2
-                e2 = target_rotations - rotations
+                e2 = numpy.matrix([[rotations[1, 0] - rotations[0, 0]],
+                                   [rotations[0, 0] - rotations[1, 0]]]) / 2
                 print("Error = {}".format(
                     numpy.array2string(e2).replace('\n', '')))
                 control_delta = self._pid.control_delta(e0, e1, e2, delta_t)
                 u2 += control_delta
                 u2[u2 > 100] = 100.0
-                u2[u2 < 30] = 30.0
+                u2[u2 < 0] = 0.0
                 print("Duty Cycle = {}".format(
                     numpy.array2string(u2).replace('\n', '')))
                 self.motor_left.turn_clockwise(u2[0, 0])
