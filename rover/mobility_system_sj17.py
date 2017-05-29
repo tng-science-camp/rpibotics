@@ -48,13 +48,13 @@ class MobilitySystem(object):
         e2 = numpy.matrix([[0], [0]])
         e1 = numpy.matrix([[0], [0]])
 
-        rotations = numpy.matrix(
-            [[self.encoder_left.get_rotations()],
-             [self.encoder_right.get_rotations()]])
-        rotation_rate = numpy.matrix(
-            [[self.encoder_left.get_rotation_rate()],
-             [self.encoder_right.get_rotation_rate()]])
         while not self._stop and time.time() - start_time < timeout:
+            rotations = numpy.matrix(
+                [[self.encoder_left.get_rotations()],
+                 [self.encoder_right.get_rotations()]])
+            rotation_rate = numpy.matrix(
+                [[self.encoder_left.get_rotation_rate()],
+                 [self.encoder_right.get_rotation_rate()]])
             print("Rotations = {}".format(
                 numpy.array2string(rotations).replace('\n', '')))
             print("Rotations = {}".format(
@@ -67,6 +67,8 @@ class MobilitySystem(object):
                 e2 = numpy.ones((2, 1)) * \
                      (rotations[0, 0] - rotations[1, 0]) / 2
                 u2 += self._pid.control_delta(e0, e1, e2, delta_t)
+                u2[u2 > 100] = 100.0
+                u2[u2 < 30] = 30.0
             print("u = {}".format(numpy.array2string(u2).replace('\n', '')))
             self.motor_left.turn_clockwise(u2[0, 0])
             self.motor_right.turn_clockwise(u2[1, 0])
