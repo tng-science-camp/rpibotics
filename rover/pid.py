@@ -14,5 +14,5 @@ class PID(object):
     def control_delta(self, e0, e1, e2, delta_t):
         delta_u = self._kp * (e2 - e1) + \
                   self._ki * delta_t * e2 + \
-                  self._kd * (e2 - 2 * e1 + e0) / delta_t
+                  self._kd * (e2 - 2.0 * e1 + e0) / delta_t
         return delta_u
