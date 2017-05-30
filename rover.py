@@ -22,6 +22,7 @@ RMOTORSPEED=78
 
 #lance servo duty cycle determines position 2.1, 10.5
 LANCE_OPEN =  2.1
+#LANCE_OPEN =  2.1
 LANCE_CLOSE = 10.5
 
 # Two motors with two directions each = four GPIO pins
@@ -69,9 +70,7 @@ GPIO_PIN_SPEED_SENSOR_RIGHT = 7 #gpio pin #7
 
 #LANCE SERVO
 #TODO: change pin
-GPIO_PIN_LANCE_SERVO = 18 #gpio pin #18
-#LED 
-GPIO_PIN_LED = 21  #gpio pin #21
+GPIO_PIN_LANCE_SERVO = 21 #gpio pin #21
 
 # Set up the GPIO pins, referring to the constants
 gpio.setwarnings(False)
@@ -93,7 +92,7 @@ gpio.setup(GPIO_PIN_IR_SENSOR_RIGHT, gpio.IN)
 gpio.setup(GPIO_PIN_SPEED_SENSOR_LEFT, gpio.IN)
 gpio.setup(GPIO_PIN_SPEED_SENSOR_RIGHT, gpio.IN)
 
-gpio.setup(GPIO_PIN_LED, gpio.OUT)
+#gpio.setup(GPIO_PIN_LED, gpio.OUT)
 
 gpio.setup(GPIO_PIN_LANCE_SERVO, gpio.OUT)
 lance_servo_pwm = gpio.PWM(GPIO_PIN_LANCE_SERVO, 50)  # Initialize Servo PWM  50
@@ -694,7 +693,7 @@ class MARSROVER(object):
         else:
             print ("@arm_lance")
             lance_servo_pwm.start(LANCE_OPEN)
-            time.sleep(1)
+            time.sleep(2)
 
     def disarm_lance (self):
         if ( self.testMode ):
@@ -702,7 +701,7 @@ class MARSROVER(object):
         else:
             print ("@disarm_lance")
             lance_servo_pwm.start(LANCE_CLOSE)
-            time.sleep(1)
+            time.sleep(2)
 
 
 
