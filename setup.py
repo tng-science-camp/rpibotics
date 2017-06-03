@@ -8,7 +8,8 @@ setup(name='rover',
       author_email='',
       license='TBD',
       packages=['rover'],
-      install_required=['numpy',
-                        'cv2',
-                        ],
-      zip_safe=False)
+      zip_safe=False,
+      install_requires=['logging',
+                        'numpy',
+                        'picamera',
+                        'time'])
