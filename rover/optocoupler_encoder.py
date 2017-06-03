@@ -17,9 +17,7 @@ class OptocouplerEncoder(object):
         self._rotation_rate = float('nan')
         self._previous_update_time = float('nan')
         GPIO.setup(self._gpio_pin, GPIO.IN)
-        GPIO.add_event_detect(self._gpio_pin, GPIO.RISING,
-                              callback=self.increment_and_update)
-        GPIO.add_event_detect(self._gpio_pin, GPIO.FALLING,
+        GPIO.add_event_detect(self._gpio_pin, GPIO.BOTH,
                               callback=self.increment_and_update)
 
     def __del__(self):
