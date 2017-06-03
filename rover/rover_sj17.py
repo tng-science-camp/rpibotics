@@ -1,6 +1,6 @@
 import logging
 import time
-import picamera.array
+import picamera
 from rover.mobility_system_sj17 import MobilitySystem
 #from rover import image_processor
 
