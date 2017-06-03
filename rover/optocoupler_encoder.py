@@ -18,7 +18,9 @@ class OptocouplerEncoder(object):
         self._previous_update_time = float('nan')
         GPIO.setup(self._gpio_pin, GPIO.IN)
         GPIO.add_event_detect(self._gpio_pin, GPIO.RISING,
-                              callback=self.update_on_change)
+                              callback=self.increment_and_update)
+        GPIO.add_event_detect(self._gpio_pin, GPIO.FALLING,
+                              callback=self.increment_and_update)
 
     def __del__(self):
         GPIO.cleanup((self._gpio_pin))
@@ -29,14 +31,14 @@ class OptocouplerEncoder(object):
         self._rotation_rate = float('nan')
         self._previous_update_time = float('nan')
 
-    def update_on_change(self, gpio_pin):
+    def increment_and_update(self, gpio_pin):
         assert self._gpio_pin == gpio_pin
         current_time = time.time()
         self._count += 1
-        self._rotations = self._count / self._slit_count
+        self._rotations = self._count / self._slit_count / 2
         if not math.isnan(self._previous_update_time):
             duration = current_time - self._previous_update_time
-            self._rotation_rate = 1 / self._slit_count / duration
+            self._rotation_rate = 1 / self._slit_count / 2 / duration
         self._previous_update_time = current_time
 
     def get_rotations(self):
