@@ -9,7 +9,5 @@ setup(name='rover',
       license='TBD',
       packages=['rover'],
       zip_safe=False,
-      install_requires=['logging',
-                        'numpy',
-                        'picamera',
-                        'time'])
+      install_requires=['numpy',
+                        'picamera'])
