@@ -1,6 +1,7 @@
+import logging
 import time
-from rover.mobility_system_sj17 import MobilitySystem
 import picamera.array
+from rover.mobility_system_sj17 import MobilitySystem
 #from rover import image_processor
 
 
@@ -33,13 +34,18 @@ class RoverSJ17(object):
             print("@capture_image: Take photo and save it as " + image_path)
 
     def front_is_blocked(self):
-        return self.mobility_system.front_is_blocked()
+        blocked = self.mobility_system.front_is_blocked()
+        if blocked:
+            print("@front_is_blocked: Front is blocked.")
+        else:
+            print("@front_is_blocked: Front is not blocked.")
+        return blocked
 
     def go_forward(self, target_distance: float = 0.3):
         return self.mobility_system.go_forward(target_distance=target_distance)
 
     def go_backward(self, target_distance: float = 0.3):
-        return self.mobility_system.go_forward(target_distance=target_distance)
+        return self.mobility_system.go_backward(target_distance=target_distance)
 
     def turn_right(self, target_angle: float = 90.0):
         return self.mobility_system.turn_right(target_angle=target_angle)
