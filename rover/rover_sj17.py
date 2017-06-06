@@ -5,7 +5,7 @@ from rover.mobility_system_sj17 import MobilitySystem
 #from rover import image_processor
 
 
-class RoverSJ17(object):
+class Rover(object):
     # There should only be one instance
     _instances = []
 
