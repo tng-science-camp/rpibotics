@@ -1,6 +1,7 @@
 import logging
 import numpy
 import time
+from typing import Tuple
 from rover.dc_motor import DCMotor
 from rover.optocoupler_encoder import OptocouplerEncoder
 from rover.pid import PID
@@ -16,86 +17,110 @@ class MobilitySystem(object):
         if len(self._instances) > 1:
             print("ERROR: You can't have more than one mobility system.")
             exit(1)
-        self._wheel_circumference = numpy.pi * 0.065  # [meter]
-        self._wheel_distance = numpy.pi * 0.125  # [meter]
         self._instances.append(self)
-        self.motor_left = DCMotor(12, 20, 16, f=100)
-        self.motor_right = DCMotor(13, 26, 19, f=100)
-        self.encoder_left = OptocouplerEncoder(8, s=20)
-        self.encoder_right = OptocouplerEncoder(7, s=20)
+        self.motor_left = DCMotor(12, 20, 16, f=100.0)
+        self.motor_right = DCMotor(13, 26, 19, f=100.0)
+        self.encoder_left = OptocouplerEncoder(8, s=20.0)
+        self.encoder_right = OptocouplerEncoder(7, s=20.0)
         self.obstacle_sensor_left = IRObstacleSensor(17)
         self.obstacle_sensor_right = IRObstacleSensor(27)
-        self._pid = PID(kp=300.0, ki=50.0, kd=20.0)
+        self._wheel_circumference = numpy.pi * 0.065  # [meter]
+        self._wheel_distance = numpy.pi * 0.125  # [meter]
+        self._pid = PID(kp=300.0, ki=200.0, kd=0.0)
+        self._initial_duty_cycle = ((70.0), (70.0))
         self._stop = True
 
+    def set_initial_duty_cycle(self,
+                               duty_cycle: Tuple[Tuple[float],
+                                                Tuple[float]]=
+                              ((70.0), (70.0))):
+        self._initial_duty_cycle = duty_cycle
+
     def stop(self):
-        logging.info('MobilitySystem stopping.')
+        logging.info('Stopping.')
         self._stop = True
         self.motor_left.stop()
         self.motor_right.stop()
 
     def reset(self):
-        logging.info('MobilitySystem resetting.')
+        logging.info('Resetting.')
         self.encoder_left.reset()
         self.encoder_right.reset()
         self.obstacle_sensor_left.clear_detect_callbacks()
         self.obstacle_sensor_right.clear_detect_callbacks()
 
     def initialize(self):
-        logging.info('MobilitySystem initializing.')
+        logging.info('Initializing.')
         self.stop()
         self.reset()
         self.obstacle_sensor_left.add_detect_callback(self.stop)
         self.obstacle_sensor_right.add_detect_callback(self.stop)
 
     def front_is_blocked(self):
-        logging.debug('MobilitySystem front is blocked.')
-        return self.obstacle_sensor_left.obstacle_is_in_front() or \
-               self.obstacle_sensor_right.obstacle_is_in_front()
+        front_is_blocked = self.obstacle_sensor_left.obstacle_is_in_front() or\
+                           self.obstacle_sensor_right.obstacle_is_in_front()
+        logging.debug('Checking if front is blocked.')
+        return front_is_blocked
 
-    def go_forward(self, target_distance: float = 0.3,
-                   duty_cycle: float = 70.0,
-                   timeout: float = 30, delta_t: float = 0.01):
-        logging.info('MobilitySystem  moving forward.')
-        return self.go_straight(target_distance=target_distance,
-                                direction_is_forward=True,
-                                duty_cycle=duty_cycle,
-                                timeout=timeout,
-                                delta_t=delta_t)
+    def go_forward(self,
+                   target_distance: float = 0.3,
+                   duty_cycle: Tuple[Tuple[float],
+                                     Tuple[float]] = None,
+                   timeout: float = 30,
+                   delta_t: float = 0.01):
+        logging.info('Driving forward.')
+        return self.drive_straight(target_distance=target_distance,
+                                   direction_is_forward=True,
+                                   duty_cycle=duty_cycle,
+                                   timeout=timeout,
+                                   delta_t=delta_t)
 
-    def go_backward(self, target_distance: float = 0.3,
-                    duty_cycle: float = 70.0,
-                    timeout: float = 5, delta_t: float = 0.01):
-        logging.info('MobilitySystem moving backward.')
-        return self.go_straight(target_distance=target_distance,
-                                direction_is_forward=False,
-                                duty_cycle=duty_cycle,
-                                timeout=timeout,
-                                delta_t=delta_t)
+    def go_backward(self,
+                    target_distance: float = 0.3,
+                    duty_cycle: Tuple[Tuple[float],
+                                      Tuple[float]] = None,
+                    timeout: float = 5,
+                    delta_t: float = 0.01):
+        logging.info('Driving backward.')
+        return self.drive_straight(target_distance=target_distance,
+                                   direction_is_forward=False,
+                                   duty_cycle=duty_cycle,
+                                   timeout=timeout,
+                                   delta_t=delta_t)
 
-    def turn_right(self, target_angle: float = 90.0, duty_cycle: float = 70.0,
-                   timeout: float = 30, delta_t: float = 0.001):
-        logging.info('MobilitySystem turning right.')
+    def turn_right(self,
+                   target_angle: float = 90.0,
+                   duty_cycle: Tuple[Tuple[float],
+                                     Tuple[float]] = None,
+                   timeout: float = 30,
+                   delta_t: float = 0.001):
+        logging.info('Turning right.')
         return self.turn(target_angle=target_angle,
                          direction_is_right=True,
                          duty_cycle=duty_cycle,
                          timeout=timeout,
                          delta_t=delta_t)
 
-    def turn_left(self, target_angle: float = 90.0, duty_cycle: float = 70.0,
-                  timeout: float = 30, delta_t: float = 0.001):
-        logging.info('MobilitySystem turning left.')
+    def turn_left(self,
+                  target_angle: float = 90.0,
+                  duty_cycle: Tuple[Tuple[float],
+                                    Tuple[float]] = None,
+                  timeout: float = 30,
+                  delta_t: float = 0.001):
+        logging.info('Turning left.')
         return self.turn(target_angle=target_angle,
                          direction_is_right=False,
                          duty_cycle=duty_cycle,
                          timeout=timeout,
                          delta_t=delta_t)
 
-    def go_straight(self,
-                    target_distance: float = 0.3,
-                    direction_is_forward: bool = True,
-                    duty_cycle: float = 70.0,
-                    timeout: float = 30, delta_t: float = 0.01):
+    def drive_straight(self,
+                       target_distance: float = 0.3,
+                       direction_is_forward: bool = True,
+                       duty_cycle: Tuple[Tuple[float],
+                                         Tuple[float]] = None,
+                       timeout: float = 30,
+                       delta_t: float = 0.01):
         start_time = time.time()
 
         target_rotation = numpy.ones((2, 1)) * \
@@ -105,7 +130,10 @@ class MobilitySystem(object):
         self.initialize()
         self._stop = False
 
-        u2 = float(duty_cycle) * numpy.ones((2, 1))
+        if duty_cycle is not None:
+            u2 = numpy.matrix(duty_cycle)
+        else:
+            u2 = numpy.matrix(self._initial_duty_cycle)
         e2 = numpy.matrix([[0.0], [0.0]])
         e1 = numpy.matrix([[0.0], [0.0]])
 
@@ -147,9 +175,13 @@ class MobilitySystem(object):
         drive_time = time.time() - start_time
         return distance, drive_time
 
-    def turn(self, target_angle: float = 90.0, direction_is_right: bool = True,
-             duty_cycle: float = 70.0,
-             timeout: float = 30, delta_t: float = 0.001):
+    def turn(self,
+             target_angle: float = 90.0,
+             direction_is_right: bool = True,
+             duty_cycle: Tuple[Tuple[float],
+                               Tuple[float]] = ((70.0), (70.0)),
+             timeout: float = 30,
+             delta_t: float = 0.001):
         start_time = time.time()
 
         target_rotation = numpy.ones((2, 1)) * \
@@ -161,7 +193,10 @@ class MobilitySystem(object):
         self.initialize()
         self._stop = False
 
-        u2 = float(duty_cycle) * numpy.ones((2, 1))
+        if duty_cycle is not None:
+            u2 = numpy.matrix(duty_cycle)
+        else:
+            u2 = numpy.matrix(self._initial_duty_cycle)
         e2 = numpy.matrix([[0.0], [0.0]])
         e1 = numpy.matrix([[0.0], [0.0]])
 
