@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import smbus
 import math
 import time
@@ -96,7 +96,7 @@ class Magnetometer(object):
         self.set_data_output_configuration(
             measurement_mode='normal',
             data_output_rate=15.0,
-            num_of_samples=8
+            num_of_samples=11
         )
         self.set_gain_configuration(GAIN_SETTINGS[self.__max_gauss]['gain'])
         self.set_measurement_mode(CONTINUOUS_MEASUREMENT_MODE)
