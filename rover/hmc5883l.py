@@ -65,7 +65,7 @@ GAIN_SETTINGS = {
 UNDERFLOW_OVERFLOW_OUTPUT_VALUE = -4096
 
 
-def compute_twos_complement(self, val, len):
+def compute_twos_complement(val, len):
     if (val & (1 << len - 1)):
         val = val - (1 << len)
     return val
