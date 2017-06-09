@@ -1,7 +1,5 @@
-from typing import NoReturn
-
 class PID(object):
-    def __init__(self, kp: float, ki: float, kd: float) -> NoReturn:
+    def __init__(self, kp: float, ki: float, kd: float):
         """
 
         :rtype: None

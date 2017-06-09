@@ -2,7 +2,6 @@
 
 """
 import RPi.GPIO as GPIO
-from typing import NoReturn
 
 # Set up the GPIO pins, referring to the constants
 GPIO.setwarnings(False)
@@ -15,7 +14,7 @@ class DCMotor(object):
                  gpio_pin_ena: int,
                  gpio_pin_in1: int,
                  gpio_pin_in2: int,
-                 frequency: float = 100.0) -> NoReturn:
+                 frequency: float = 100.0):
         """
 
         :rtype: None

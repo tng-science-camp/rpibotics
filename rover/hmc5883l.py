@@ -2,7 +2,7 @@
 # import smbus
 import math
 import time
-from typing import NoReturn, Tuple
+from typing import Tuple
 
 CONFIG_REGISTER_A = 0x00
 CONFIG_REGISTER_B = 0x01
@@ -102,7 +102,7 @@ class Magnetometer(object):
             self,
             measurement_mode: str = 'normal',
             data_output_rate: float = 15.0,
-            num_of_samples: int = 1) -> NoReturn:
+            num_of_samples: int = 1):
         self._bus.write_byte_data(
             self.address,
             CONFIG_REGISTER_A,
@@ -115,7 +115,7 @@ class Magnetometer(object):
 
     def set_gain_configuration(
             self,
-            gain: int = GAIN_SETTINGS[1.3]['gain']) -> NoReturn:
+            gain: int = GAIN_SETTINGS[1.3]['gain']):
         self._bus.write_byte_data(self.address,
                                   CONFIG_REGISTER_B,
                                   gain << GAIN_CONFIG_BITS_OFFSET)
@@ -130,7 +130,7 @@ class Magnetometer(object):
                                        data[Z_LSB_REGISTER])
         return x, y, z
 
-    def set_declination(self, degrees: float, minutes: float) -> NoReturn:
+    def set_declination(self, degrees: float, minutes: float):
         self.__declDegrees = degrees
         self.__declMinutes = minutes
 
@@ -138,7 +138,7 @@ class Magnetometer(object):
         return self.__declDegrees, self.__declMinutes
 
     def set_measurement_mode(self,
-                             mode: int = CONTINUOUS_MEASUREMENT_MODE) -> NoReturn:
+                             mode: int = CONTINUOUS_MEASUREMENT_MODE):
         self._bus.write_byte_data(self.address, MODE_REGISTER, mode)
 
     def __convert_data_output(self, msb, lsb):
