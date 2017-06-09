@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# import smbus
+import smbus
 import math
 import time
 from typing import Tuple
@@ -79,8 +79,11 @@ def convert_radians_to_degrees_minutes(val):
 
 
 class Magnetometer(object):
-    def __init__(self, port=1, address=0x1E, max_gauss: float = 1.3,
-                 declination=(0, 0)):
+    def __init__(self,
+                 port: int = 1,
+                 address: int = 0x1E,
+                 max_gauss: float = 1.3,
+                 declination: Tuple[float, float] = (0.0, 0.0)):
         self._bus = smbus.SMBus(port)
         self.__max_gauss = max_gauss
         self.address = address
