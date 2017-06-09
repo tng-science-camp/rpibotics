@@ -2,6 +2,7 @@
 
 """
 import RPi.GPIO as GPIO
+from typing import NoReturn
 
 # Set up the GPIO pins, referring to the constants
 GPIO.setwarnings(False)
@@ -10,15 +11,23 @@ GPIO.setmode(GPIO.BCM)
 
 class DCMotor(object):
 
-    def __init__(self, ena, in1, in2, f=20000):
-        self._ena = ena
-        self._in1 = in1
-        self._in2 = in2
+    def __init__(self,
+                 gpio_pin_ena: int,
+                 gpio_pin_in1: int,
+                 gpio_pin_in2: int,
+                 frequency: float = 100.0) -> NoReturn:
+        """
+
+        :rtype: None
+        """
+        self._ena = gpio_pin_ena
+        self._in1 = gpio_pin_in1
+        self._in2 = gpio_pin_in2
         GPIO.setup(self._ena, GPIO.OUT)
         GPIO.setup(self._in1, GPIO.OUT)
         GPIO.setup(self._in2, GPIO.OUT)
         # Initialize PWM on pwmPin 20Hz frequency
-        self._pwm = GPIO.PWM(self._ena, f)
+        self._pwm = GPIO.PWM(self._ena, frequency)
 
     def __del__(self):
         GPIO.cleanup((self._ena, self._in1, self._in2))

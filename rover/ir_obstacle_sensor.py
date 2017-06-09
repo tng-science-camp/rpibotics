@@ -5,10 +5,10 @@ import RPi.GPIO as GPIO
 
 class IRObstacleSensor(object):
 
-    def __init__(self, pin):
+    def __init__(self, gpio_pin):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        self._gpio_pin = pin
+        self._gpio_pin = gpio_pin
         GPIO.setup(self._gpio_pin, GPIO.IN)
         GPIO.add_event_detect(self._gpio_pin, GPIO.FALLING,
                               callback=self._execute_when_obstacle_detected)

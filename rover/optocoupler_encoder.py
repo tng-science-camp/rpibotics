@@ -4,13 +4,18 @@
 import RPi.GPIO as GPIO
 import time
 import math
+from typing import NoReturn
 
 GPIO.setmode(GPIO.BCM)
 
 
 class OptocouplerEncoder(object):
-    def __init__(self, gpio_pin, s=20):
-        self._slit_count = s
+    def __init__(self, gpio_pin: int, slit_count: int = 20) -> NoReturn:
+        """
+
+        :type gpio_pin: None
+        """
+        self._slit_count = slit_count
         self._gpio_pin = gpio_pin
         self._count = 0
         self._rotations = 0
