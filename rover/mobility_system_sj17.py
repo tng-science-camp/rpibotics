@@ -7,32 +7,69 @@ from rover.optocoupler_encoder import OptocouplerEncoder
 from rover.pid import PID
 from rover.ir_obstacle_sensor import IRObstacleSensor
 
+MOBILITY_SYSTEM_CONFIG = {
+    'motor_left'           : {'gpio_pin_ena': 12,
+                              'gpio_pin_in1': 20,
+                              'gpio_pin_in2': 16,
+                              'frequency'   : 100.0},
+    'motor_right'          : {'gpio_pin_ena': 13,
+                              'gpio_pin_in1': 26,
+                              'gpio_pin_in2': 19,
+                              'frequency'   : 100.0},
+    'encoder_left'         : {'gpio_pin'  : 8,
+                              'slit_count': 20},
+    'encoder_right'        : {'gpio_pin'  : 7,
+                              'slit_count': 20},
+    'obstacle_sensor_left' : {'gpio_pin': 17},
+    'obstacle_sensor_right': {'gpio_pin': 27},
+    'pid'                  : {'kp': 300.0,
+                              'ki': 200.0,
+                              'kd': 0.0},
+    'initial_duty_cycle'   : {'duty_cycle_left' : 70.0,
+                              'duty_cycle_right': 70.0}
+}
+
 
 class MobilitySystem(object):
-    # There should only be one instance
-    _instances = []
+    def __init__(self, config=MOBILITY_SYSTEM_CONFIG):
+        """
 
-    # Initialise the object
-    def __init__(self):
-        if len(self._instances) > 1:
-            print("ERROR: You can't have more than one mobility system.")
-            exit(1)
-        self._instances.append(self)
-        self.motor_left = DCMotor(12, 20, 16, f=100.0)
-        self.motor_right = DCMotor(13, 26, 19, f=100.0)
-        self.encoder_left = OptocouplerEncoder(8, s=20.0)
-        self.encoder_right = OptocouplerEncoder(7, s=20.0)
-        self.obstacle_sensor_left = IRObstacleSensor(17)
-        self.obstacle_sensor_right = IRObstacleSensor(27)
+        :type config: dict
+        """
+        self.motor_left = DCMotor(
+            gpio_pin_ena=config['motor_left']['gpio_pin_ena'],
+            gpio_pin_in1=config['motor_left']['gpio_pin_in1'],
+            gpio_pin_in2=config['motor_left']['gpio_pin_in2'],
+            frequency=config['motor_left']['frequency'])
+        self.motor_right = DCMotor(
+            gpio_pin_ena=config['motor_right']['gpio_pin_ena'],
+            gpio_pin_in1=config['motor_right']['gpio_pin_in1'],
+            gpio_pin_in2=config['motor_right']['gpio_pin_in2'],
+            frequency=config['motor_right']['frequency'])
+        self.encoder_left = OptocouplerEncoder(
+            gpio_pin=config['encoder_left']['gpio_pin'],
+            slit_count=config['encoder_left']['slit_count'])
+        self.encoder_right = OptocouplerEncoder(
+            gpio_pin=config['encoder_right']['gpio_pin'],
+            slit_count=config['encoder_right']['slit_count'])
+        self.obstacle_sensor_left = IRObstacleSensor(
+            gpio_pin=config['obstacle_sensor_left']['gpio_pin'])
+        self.obstacle_sensor_right = IRObstacleSensor(
+            gpio_pin=config['obstacle_sensor_right']['gpio_pin'])
+        self._pid = PID(
+            kp=config['pid']['kp'],
+            ki=config['pid']['ki'],
+            kd=config['pid']['kd'])
+        self._initial_duty_cycle = \
+            ((config['initial_duty_cycle']['duty_cycle_left'],),
+             (config['initial_duty_cycle']['duty_cycle_right'],))
         self._wheel_circumference = numpy.pi * 0.065  # [meter]
         self._wheel_distance = numpy.pi * 0.125  # [meter]
-        self._pid = PID(kp=300.0, ki=200.0, kd=0.0)
-        self._initial_duty_cycle = [[70.0], [70.0]]
         self._stop = True
 
-    def set_initial_duty_cycle(self,
-                               duty_cycle: Tuple[Tuple[float], Tuple[float]]=
-                               [[70.0], [70.0]]):
+    def set_initial_duty_cycle(
+            self,
+            duty_cycle: Tuple[Tuple[float], Tuple[float]]=((70.0,), (70.0,))):
         self._initial_duty_cycle = duty_cycle
 
     def stop(self):
@@ -56,7 +93,7 @@ class MobilitySystem(object):
 
     def front_is_blocked(self):
         logging.debug('Checking if front is blocked.')
-        front_is_blocked = self.obstacle_sensor_left.obstacle_is_in_front() or\
+        front_is_blocked = self.obstacle_sensor_left.obstacle_is_in_front() or \
                            self.obstacle_sensor_right.obstacle_is_in_front()
         return front_is_blocked
 
