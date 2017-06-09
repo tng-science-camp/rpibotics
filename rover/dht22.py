@@ -5,7 +5,7 @@ import Adafruit_DHT as DHT
 
 
 class DHTSensor(object):
-    def __init__(self, sensor, pin):
+    def __init__(self, pin):
         self._sensor = DHT.AM2302
         self._pin = pin
 
