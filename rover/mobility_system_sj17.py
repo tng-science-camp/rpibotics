@@ -154,7 +154,6 @@ class MobilitySystem(object):
                     delta_t: float = 0.01):
         start_time = time.time()
 
-        self._stop = False
         self.reset()
         if direction_is_forward:
             self.enable_stop_when_front_is_blocked()
@@ -175,6 +174,7 @@ class MobilitySystem(object):
             [[self.encoder_left.get_rotations()],
              [self.encoder_right.get_rotations()]])
 
+        self._stop = False
         while not self._stop and time.time() - start_time < timeout:
             logging.debug('Measured Rotation = %s',
                           numpy.array2string(rotation).replace('\n', ''))
@@ -225,7 +225,6 @@ class MobilitySystem(object):
                       numpy.array2string(target_rotation).replace('\n', ''))
 
         self.reset()
-        self._stop = False
 
         if duty_cycle is not None:
             u2 = numpy.matrix(duty_cycle)
@@ -237,6 +236,8 @@ class MobilitySystem(object):
         rotation = numpy.matrix(
             [[self.encoder_left.get_rotations()],
              [self.encoder_right.get_rotations()]])
+
+        self._stop = False
 
         while not self._stop and time.time() - start_time < timeout:
             logging.debug('Measured Rotation = %s',
