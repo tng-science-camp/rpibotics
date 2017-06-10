@@ -56,7 +56,6 @@ class Rover(object):
                  lance_config=LANCE_CONFIG):
         logging.info('Initializing a Rover.')
         self.mob = MobilitySystem(config=mobility_system_config)
-        self.lance = Lance(config=lance_config)
         self.dht = DHTSensor(gpio_pin=dht_sensor_config['gpio_pin'])
         self.mag = Magnetometer(port=mag_config['port'],
                                 address=mag_config['address'],
