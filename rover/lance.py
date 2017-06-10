@@ -1,3 +1,4 @@
+import logging
 from rover.servo import Servo
 
 LANCE_CONFIG = {
