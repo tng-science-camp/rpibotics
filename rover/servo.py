@@ -7,14 +7,14 @@ import RPi.GPIO as GPIO
 class Servo(object):
 
     def __init__(self,
-                 gpio_pin: int, duty_cycle_zero: float, duty_cycle_pi: float):
+                 gpio_pin: int, duty_cycle_0: float, duty_cycle_180: float):
         """
 
         :rtype: None
         """
         self._pin = gpio_pin
-        self._duty_cycle_0 = duty_cycle_zero
-        self._duty_cycle_180 = duty_cycle_pi
+        self._duty_cycle_0 = duty_cycle_0
+        self._duty_cycle_180 = duty_cycle_180
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._pin, GPIO.OUT)
