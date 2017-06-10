@@ -80,7 +80,6 @@ class MobilitySystem(object):
 
     def reset(self):
         logging.info('Resetting.')
-        self.stop()
         self.encoder_left.reset()
         self.encoder_right.reset()
         self.obstacle_sensor_left.clear_detect_callbacks()
