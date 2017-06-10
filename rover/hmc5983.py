@@ -178,7 +178,7 @@ class Magnetometer(object):
 if __name__ == "__main__":
     magnetometer = Magnetometer(declination=(12, 2.0))
     while True:
-        (x, y, x) = magnetometer.get_data()
+        (x, y, z) = magnetometer.get_data()
         print('Measurement: x:{:d}, y:{:d}, z:{:d}'.format(x, y, z))
         heading = magnetometer.get_heading()
         degrees, minutes = convert_radians_to_degrees_minutes(heading)
