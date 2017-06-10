@@ -5,9 +5,9 @@ import Adafruit_DHT as DHT
 
 
 class DHTSensor(object):
-    def __init__(self, pin):
+    def __init__(self, gpio_pin):
         self._sensor = DHT.AM2302
-        self._pin = pin
+        self._pin = gpio_pin
 
     def measure_humidity_and_temperature(self, retries=15, delay_seconds=2):
         """
