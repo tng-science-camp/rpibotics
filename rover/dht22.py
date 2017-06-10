@@ -27,11 +27,11 @@ class DHTSensor(object):
 
     def measure_humidity(self, retries=15, delay_seconds=2):
         humidity, temperature = self.measure_humidity_and_temperature(
-            self, retries, delay_seconds)
+            retries, delay_seconds)
         return humidity
 
     def measure_temperature(self, retries=15, delay_seconds=2):
         humidity, temperature = self.measure_humidity_and_temperature(
-            self, retries, delay_seconds)
+            retries, delay_seconds)
         return temperature
 
