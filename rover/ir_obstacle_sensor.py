@@ -8,7 +8,7 @@ class IRObstacleSensor(object):
 
     def __init__(self, gpio_pin):
         logging.info('Initializing a IRObstacleSensor.')
-        GPIO.setwarnings(False)
+        #GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         self._gpio_pin = gpio_pin
         GPIO.setup(self._gpio_pin, GPIO.IN)

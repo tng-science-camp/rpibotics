@@ -5,8 +5,8 @@ import logging
 import RPi.GPIO as GPIO
 
 # Set up the GPIO pins, referring to the constants
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
+#GPIO.setwarnings(False)
+#GPIO.setmode(GPIO.BCM)
 
 
 class DCMotor(object):
@@ -24,6 +24,7 @@ class DCMotor(object):
         self._ena = gpio_pin_ena
         self._in1 = gpio_pin_in1
         self._in2 = gpio_pin_in2
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._ena, GPIO.OUT)
         GPIO.setup(self._in1, GPIO.OUT)
         GPIO.setup(self._in2, GPIO.OUT)

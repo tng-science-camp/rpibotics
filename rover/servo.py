@@ -17,7 +17,7 @@ class Servo(object):
         self._pin = gpio_pin
         self._duty_cycle_0 = duty_cycle_0
         self._duty_cycle_180 = duty_cycle_180
-        GPIO.setwarnings(False)
+        #GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._pin, GPIO.OUT)
         self._pwm = GPIO.PWM(self._pin, 50)
