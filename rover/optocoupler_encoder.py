@@ -1,11 +1,11 @@
+#!/usr/bin/env python3
 """
 
 """
 import RPi.GPIO as GPIO
 import time
 import math
-
-GPIO.setmode(GPIO.BCM)
+import argparse
 
 
 class OptocouplerEncoder(object):
@@ -20,6 +20,7 @@ class OptocouplerEncoder(object):
         self._rotations = 0
         self._rotation_rate = float('nan')
         self._previous_update_time = float('nan')
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._gpio_pin, GPIO.IN)
         GPIO.add_event_detect(self._gpio_pin, GPIO.BOTH,
                               callback=self.increment_and_update)
@@ -50,3 +51,19 @@ class OptocouplerEncoder(object):
         return self._rotation_rate
 
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Runs the optocoupler_encoder to determine the number of "
+                    "rotations and the rotation rate.")
+    parser.add_argument("-p", dest="pin", default=7, type=int,
+                        help="GPIO pin of the optocoupler")
+    args = vars(parser.parse_args())
+
+    encoder = OptocouplerEncoder(gpio_pin=args['pin'])
+    previous_rotations = encoder.get_rotations()
+    while True:
+        rotations = encoder.get_rotations()
+        if rotations != previous_rotations:
+            print("Rotations:     {:d}".format(rotations))
+            print("Rotation Rate: {:f}".format(encoder.get_rotation_rate()))
+        time.sleep(1)
