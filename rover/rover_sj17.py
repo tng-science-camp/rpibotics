@@ -35,7 +35,7 @@ DHT_SENSOR_CONFIG = {
 }
 
 MAG_CONFIG = {
-    'port'       : 1
+    'port'       : 1,
     'address'    : 0x1E,
     'max_gauss'  : 1.3,
     'declination': (11, 55)
