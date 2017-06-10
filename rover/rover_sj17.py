@@ -33,7 +33,7 @@ MOBILITY_SYSTEM_CONFIG = {
 class Rover(MobilitySystem, DHTSensor):
     def __init__(self):
         MobilitySystem.__init__(self, MOBILITY_SYSTEM_CONFIG)
-        dDHTSensor.__init__(self, GPIO_PIN_DHT22)
+        DHTSensor.__init__(self, GPIO_PIN_DHT22)
         self._image_folder = "/var/www/html/rover_img/"
 
     def capture_image(self,
