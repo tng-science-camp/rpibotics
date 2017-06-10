@@ -28,7 +28,7 @@ MOBILITY_SYSTEM_CONFIG = {
     'initial_duty_cycle'   : {'duty_cycle_left' : 70.0,
                               'duty_cycle_right': 70.0},
     'wheel_diameter'       : 0.065,
-    'wheel_distance'       : 0.10
+    'wheel_distance'       : 0.08
 }
 
 
