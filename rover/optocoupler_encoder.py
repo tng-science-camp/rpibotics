@@ -69,4 +69,4 @@ if __name__ == "__main__":
             print("Rotations:     {:f}".format(rotations))
             print("Rotation Rate: {:f}".format(encoder.get_rotation_rate()))
             print("Waiting for the encoder to turn...")
-        time.sleep(1)
+        time.sleep(0.1)
