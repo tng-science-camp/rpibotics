@@ -54,14 +54,14 @@ class Rover(object):
                  dht_sensor_config=DHT_SENSOR_CONFIG,
                  mag_config=MAG_CONFIG,
                  lance_config=LANCE_CONFIG):
-        self.mob = MobilitySystem(mobility_system_config)
-        self.lance = Lance(lance_config)
-        self.dht = DHTSensor(dht_sensor_config['gpio_pin'])
+        self.mob = MobilitySystem(config=mobility_system_config)
+        self.lance = Lance(config=lance_config)
+        self.dht = DHTSensor(gpio_pin=dht_sensor_config['gpio_pin'])
         self.mag = Magnetometer(port=mag_config['port'],
                                 address=mag_config['address'],
                                 max_gauss=mag_config['max_gauss'],
                                 declination=mag_config['declination'])
-        self.lance = Lance(lance_config)
+        self.lance = Lance(config=lance_config)
         self._image_folder = "/var/www/html/rover_img/"
 
     def capture_image(self,
