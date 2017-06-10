@@ -4,7 +4,7 @@
 import RPi.GPIO as GPIO
 
 
-class DCMotor(object):
+class Servo(object):
 
     def __init__(self,
                  gpio_pin: int, duty_cycle_zero: float, duty_cycle_pi: float):
@@ -23,7 +23,7 @@ class DCMotor(object):
     def __del__(self):
         GPIO.cleanup(self._pin)
 
-    def calculate_duty_cycle(self, angle):
+    def calculate_duty_cycle(self, angle: float):
         return (self._duty_cycle_180 - self._duty_cycle_0) / 180.0 * angle + \
                self._duty_cycle_0
 
