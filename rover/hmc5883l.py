@@ -43,10 +43,10 @@ DATA_OUTPUT_RATE_SETTING = {
 }
 
 NUM_OF_SAMPLES_SETTING = {
-    1 : 0x00,
-    2 : 0x01,
-    10: 0x03,
-    11: 0x04
+    1: 0x00,
+    2: 0x01,
+    4: 0x03,
+    8: 0x04
 }
 
 GAIN_CONFIG_BITS_OFFSET = 5
@@ -96,7 +96,7 @@ class Magnetometer(object):
         self.set_data_output_configuration(
             measurement_mode='normal',
             data_output_rate=15.0,
-            num_of_samples=11
+            num_of_samples=8
         )
         self.set_gain_configuration(GAIN_SETTINGS[self.__max_gauss]['gain'])
         self.set_measurement_mode(CONTINUOUS_MEASUREMENT_MODE)
