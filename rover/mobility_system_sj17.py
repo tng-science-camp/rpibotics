@@ -36,6 +36,7 @@ class MobilitySystem(object):
 
         :type config: dict
         """
+        logging.info('Initializing a MobilitySystem.')
         self.motor_left = DCMotor(
             gpio_pin_ena=config['motor_left']['gpio_pin_ena'],
             gpio_pin_in1=config['motor_left']['gpio_pin_in1'],

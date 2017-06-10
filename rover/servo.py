@@ -1,6 +1,7 @@
 """
 
 """
+import logging
 import RPi.GPIO as GPIO
 
 
@@ -12,6 +13,7 @@ class Servo(object):
 
         :rtype: None
         """
+        logging.info('Initializing a Servo.')
         self._pin = gpio_pin
         self._duty_cycle_0 = duty_cycle_0
         self._duty_cycle_180 = duty_cycle_180

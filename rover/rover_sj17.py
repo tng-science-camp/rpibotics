@@ -1,4 +1,4 @@
-# import logging
+import logging
 import time
 import picamera
 from rover.mobility_system_sj17 import MobilitySystem
@@ -54,6 +54,7 @@ class Rover(object):
                  dht_sensor_config=DHT_SENSOR_CONFIG,
                  mag_config=MAG_CONFIG,
                  lance_config=LANCE_CONFIG):
+        logging.info('Initializing a Rover.')
         self.mob = MobilitySystem(config=mobility_system_config)
         self.lance = Lance(config=lance_config)
         self.dht = DHTSensor(gpio_pin=dht_sensor_config['gpio_pin'])

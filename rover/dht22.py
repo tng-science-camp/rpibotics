@@ -1,11 +1,13 @@
 """
 
 """
+import logging
 import Adafruit_DHT as DHT
 
 
 class DHTSensor(object):
     def __init__(self, gpio_pin):
+        logging.info('Initializing a DHTSensor.')
         self._sensor = DHT.AM2302
         self._pin = gpio_pin
 

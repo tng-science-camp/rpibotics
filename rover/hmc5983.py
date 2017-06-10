@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import logging
 import smbus
 import math
 import time
@@ -88,6 +89,7 @@ class Magnetometer(object):
                  address: int = 0x1E,
                  max_gauss: float = 1.3,
                  declination: Tuple[float, float] = (0.0, 0.0)):
+        logging.info('Initializing a Magnetometer.')
         self._bus = smbus.SMBus(port)
         self.__max_gauss = max_gauss
         self.address = address

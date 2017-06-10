@@ -1,3 +1,4 @@
+import logging
 import RPi.GPIO as GPIO
 
 # Set up the GPIO pins, referring to the constants
@@ -6,6 +7,7 @@ import RPi.GPIO as GPIO
 class IRObstacleSensor(object):
 
     def __init__(self, gpio_pin):
+        logging.info('Initializing a IRObstacleSensor.')
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         self._gpio_pin = gpio_pin

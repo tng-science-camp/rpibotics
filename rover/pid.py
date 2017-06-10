@@ -1,9 +1,13 @@
+import logging
+
+
 class PID(object):
     def __init__(self, kp: float, ki: float, kd: float):
         """
 
         :rtype: None
         """
+        logging.info('Initializing a PID.')
         self._kp = kp
         self._ki = ki
         self._kd = kd

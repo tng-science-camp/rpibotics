@@ -2,6 +2,7 @@
 """
 
 """
+import logging
 import RPi.GPIO as GPIO
 import time
 import math
@@ -14,6 +15,7 @@ class OptocouplerEncoder(object):
 
         :type gpio_pin: None
         """
+        logging.info('Initializing a OptocouplerEncoder.')
         self._slit_count = slit_count
         self._gpio_pin = gpio_pin
         self._count = 0

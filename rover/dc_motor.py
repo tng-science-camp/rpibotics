@@ -1,6 +1,7 @@
 """
 
 """
+import logging
 import RPi.GPIO as GPIO
 
 # Set up the GPIO pins, referring to the constants
@@ -19,6 +20,7 @@ class DCMotor(object):
 
         :rtype: None
         """
+        logging.info('Initializing a DCMotor.')
         self._ena = gpio_pin_ena
         self._in1 = gpio_pin_in1
         self._in2 = gpio_pin_in2
