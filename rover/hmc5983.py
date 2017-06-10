@@ -179,7 +179,7 @@ if __name__ == "__main__":
     magnetometer = Magnetometer(declination=(12, 2.0))
     while True:
         (x, y, z) = magnetometer.get_data()
-        print('Measurement: x:{:d}, y:{:d}, z:{:d}'.format(x, y, z))
+        print('Measurement: x:{:f}, y:{:f}, z:{:f}'.format(x, y, z))
         heading = magnetometer.get_heading()
         degrees, minutes = convert_radians_to_degrees_minutes(heading)
         print('X-Y Heading: {:d}\N{DEGREE SIGN} {:d}\''.format(degrees,
