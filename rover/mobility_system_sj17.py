@@ -26,7 +26,9 @@ MOBILITY_SYSTEM_CONFIG = {
                               'ki': 200.0,
                               'kd': 0.0},
     'initial_duty_cycle'   : {'duty_cycle_left' : 70.0,
-                              'duty_cycle_right': 70.0}
+                              'duty_cycle_right': 70.0},
+    'wheel_diameter'       : 0.065,
+    'wheel_distance'       : 0.10
 }
 
 
@@ -64,8 +66,8 @@ class MobilitySystem(object):
         self._initial_duty_cycle = \
             ((config['initial_duty_cycle']['duty_cycle_left'],),
              (config['initial_duty_cycle']['duty_cycle_right'],))
-        self._wheel_circumference = numpy.pi * 0.065  # [meter]
-        self._wheel_distance = numpy.pi * 0.125  # [meter]
+        self._wheel_circumference = numpy.pi * config['wheel_diameter']
+        self._turn_circumference = numpy.pi * config['wheel_distance']  # [meter]
         self._stop = True
 
     def set_initial_duty_cycle(
@@ -219,7 +221,7 @@ class MobilitySystem(object):
         start_time = time.time()
 
         target_rotation = numpy.ones((2, 1)) * \
-                          self._wheel_distance / (360.0 / target_angle) / \
+                          self._turn_circumference / (360.0 / target_angle) / \
                           self._wheel_circumference
         logging.debug('Target Rotation = %s',
                       numpy.array2string(target_rotation).replace('\n', ''))
