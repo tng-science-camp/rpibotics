@@ -61,9 +61,12 @@ if __name__ == "__main__":
 
     encoder = OptocouplerEncoder(gpio_pin=args['pin'])
     previous_rotations = encoder.get_rotations()
+    print("Waiting for the encoder to turn...")
     while True:
         rotations = encoder.get_rotations()
         if rotations != previous_rotations:
+            previous_rotations = rotations
             print("Rotations:     {:f}".format(rotations))
             print("Rotation Rate: {:f}".format(encoder.get_rotation_rate()))
+            print("Waiting for the encoder to turn...")
         time.sleep(1)
