@@ -3,10 +3,11 @@ import time
 import picamera
 from rover.mobility_system_sj17 import MobilitySystem
 from rover.dht22 import DHTSensor
+from rover.hmc5983 import Magnetometer
+from rover.lance import Lance
 
 # from rover import image_processor
 
-GPIO_PIN_DHT22 = 24
 MOBILITY_SYSTEM_CONFIG = {
     'motor_left'           : {'gpio_pin_ena': 12,
                               'gpio_pin_in1': 20,
@@ -29,11 +30,38 @@ MOBILITY_SYSTEM_CONFIG = {
                               'duty_cycle_right': 70.0}
 }
 
+DHT_SENSOR_CONFIG = {
+    'gpio_pin': 24
+}
 
-class Rover(MobilitySystem, DHTSensor):
-    def __init__(self):
-        MobilitySystem.__init__(self, MOBILITY_SYSTEM_CONFIG)
-        DHTSensor.__init__(self, GPIO_PIN_DHT22)
+MAG_CONFIG = {
+    'port'       : 1
+    'address'    : 0x1E,
+    'max_gauss'  : 1.3,
+    'declination': (11, 55)
+}
+
+LANCE_CONFIG = {
+    'gpio_pin'         : 21,
+    'duty_cycle_open'  : 3,
+    'duty_cycle_closed': 12
+}
+
+
+class Rover(object):
+    def __init__(self,
+                 mobility_system_config=MOBILITY_SYSTEM_CONFIG,
+                 dht_sensor_config=DHT_SENSOR_CONFIG,
+                 mag_config=MAG_CONFIG,
+                 lance_config=LANCE_CONFIG):
+        self.mob = MobilitySystem(mobility_system_config)
+        self.lance = Lance(lance_config)
+        self.dht = DHTSensor(dht_sensor_config['gpio_pin'])
+        self.mag = Magnetometer(port=mag_config['port'],
+                                address=mag_config['address'],
+                                max_gauss=mag_config['max_gauss'],
+                                declination=mag_config['declination'])
+        self.lance = Lance(lance_config)
         self._image_folder = "/var/www/html/rover_img/"
 
     def capture_image(self,
