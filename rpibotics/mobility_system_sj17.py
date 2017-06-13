@@ -2,10 +2,10 @@ import logging
 import numpy
 import time
 from typing import Tuple
-from rpi_robotics.dc_motor import DCMotor
-from rpi_robotics.optocoupler_encoder import OptocouplerEncoder
-from rpi_robotics.pid import PID
-from rpi_robotics.ir_obstacle_sensor import IRObstacleSensor
+from rpibotics.dc_motor import DCMotor
+from rpibotics.optocoupler_encoder import OptocouplerEncoder
+from rpibotics.pid import PID
+from rpibotics.ir_obstacle_sensor import IRObstacleSensor
 
 MOBILITY_SYSTEM_CONFIG = {
     'motor_left'           : {'gpio_pin_ena': 12,

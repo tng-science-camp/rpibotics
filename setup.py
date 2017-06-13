@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
-setup(name='rpi_robotics',
+setup(name='rpibotics',
       version='0.1',
-      description='Raspberry Pi based rpi_robotics',
-      url='https://github.com/tng-spacecamp/rpi_robotics',
+      description='Raspberry Pi based rpibotics',
+      url='https://github.com/tng-spacecamp/rpibotics',
       author='',
       author_email='',
       license='TBD',
