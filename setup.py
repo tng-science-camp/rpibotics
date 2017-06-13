@@ -1,13 +1,13 @@
 from setuptools import setup
 
-setup(name='rover',
+setup(name='rpi_robotics',
       version='0.1',
-      description='Raspberry Pi based rover',
-      url='https://github.com/tng-spacecamp/rover',
+      description='Raspberry Pi based rpi_robotics',
+      url='https://github.com/tng-spacecamp/rpi_robotics',
       author='',
       author_email='',
       license='TBD',
-      packages=['rover'],
+      packages=['rpi_robotics'],
       zip_safe=False,
       install_requires=['numpy',
                         'picamera'])
