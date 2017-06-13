@@ -10,4 +10,6 @@ setup(name='rpi_robotics',
       packages=find_packages(),
       zip_safe=False,
       install_requires=['numpy',
-                        'picamera'])
+                        'picamera',
+                        'RPi.GPIO',
+                        'typing'])
