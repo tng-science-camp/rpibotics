@@ -49,13 +49,18 @@ LANCE_CONFIG = {
     'duty_cycle_closed': 12
 }
 
+IMAGING_CONFIG = {
+    'path'       : "/var/www/html/rover_img/",
+}
+
 
 class Rover(object):
     def __init__(self,
                  mobility_system_config=MOBILITY_SYSTEM_CONFIG,
                  dht_sensor_config=DHT_SENSOR_CONFIG,
                  mag_config=MAG_CONFIG,
-                 lance_config=LANCE_CONFIG):
+                 lance_config=LANCE_CONFIG,
+                 imaging_config=IMAGING_CONFIG):
         logging.info('Initializing a Rover.')
         self.mob = MobilitySystem(config=mobility_system_config)
         self.dht = DHTSensor(gpio_pin=dht_sensor_config['gpio_pin'])
@@ -64,7 +69,7 @@ class Rover(object):
                                 max_gauss=mag_config['max_gauss'],
                                 declination=mag_config['declination'])
         self.lance = Lance(config=lance_config)
-        self._image_folder = "/var/www/html/rover_img/"
+        self._image_folder = imaging_config['path']
 
     def capture_image(self,
                       resolution=(1280, 720), iso=None, shutter_speed=None):
