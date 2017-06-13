@@ -1,12 +1,12 @@
 import logging
 import time
 import picamera
-from rover.mobility_system_sj17 import MobilitySystem
-from rover.dht22 import DHTSensor
-from rover.hmc5983 import Magnetometer
-from rover.lance import Lance
+from rpi_robotics.mobility_system_sj17 import MobilitySystem
+from rpi_robotics.dht22 import DHTSensor
+from rpi_robotics.hmc5983 import Magnetometer
+from rpi_robotics.lance import Lance
 
-# from rover import image_processor
+# from rpi_robotics import image_processor
 
 MOBILITY_SYSTEM_CONFIG = {
     'motor_left'           : {'gpio_pin_ena': 12,

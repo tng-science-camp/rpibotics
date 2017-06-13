@@ -1,5 +1,5 @@
 import logging
-from rover.servo import Servo
+from rpi_robotics.servo import Servo
 
 LANCE_CONFIG = {
     'gpio_pin': 21,
