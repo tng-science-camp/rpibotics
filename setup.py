@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='rpi_robotics',
       version='0.1',
@@ -7,7 +7,7 @@ setup(name='rpi_robotics',
       author='',
       author_email='',
       license='TBD',
-      packages=['rpi_robotics'],
+      packages=find_packages(),
       zip_safe=False,
       install_requires=['numpy',
                         'picamera'])
