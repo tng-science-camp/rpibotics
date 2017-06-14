@@ -1,0 +1,9 @@
+# Compiled python modules
+*.pyc
+
+# PyCharm files
+.idea
+.idea/*.xml
+
+RPi
+Adafruit_DHT
