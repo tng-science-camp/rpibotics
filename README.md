@@ -12,11 +12,11 @@ For instructions on installing the requirements, refer to the Installation Instr
 
 Once all the required software has been installed, follow the instruction below to install the `rpibotics` Python package:
 1. In the desired directory, checkout this repository: `$ git clone https://github.com/tng-spacecamp/rpibotics.git`
-2. Change into the directory where the repository has been checkout: `cd rpibotics`
+2. Change into the directory where the repository has been checkout: `$ cd rpibotics`
 3. Install: `sudo pip3 install .`
 
 # Uninstalling
-```sudo pip3 uninstall rpibotics```
+```$ sudo pip3 uninstall rpibotics```
 
 # Installation Instructions for the Requirements
 This instruction assumes that you have Raspberry Pi v3 running Raspbian OS. It also assume that internet is available on the Rasberry Pi.
