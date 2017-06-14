@@ -2,8 +2,8 @@
 import argparse
 import curses
 import time
-from rover.dc_motor import DCMotor
-from rover.optocoupler_encoder import OptocouplerEncoder
+from rpibotics.dc_motor import DCMotor
+from rpibotics.optocoupler_encoder import OptocouplerEncoder
 
 parser = argparse.ArgumentParser(
     description="Runs DC motor with the option to change the PWM parameters.")
@@ -22,7 +22,7 @@ def main(stdscr,
          encoder_pin=args['encoder_pin']):
     quit = False
     motor = DCMotor(13, 26, 19, frequency)
-    encoder = OptocouplerEncoder(encoder_pin, s=20)
+    encoder = OptocouplerEncoder(encoder_pin, slit_count=20)
     encoder.run()
     turn_clockwise = True
     stop = True

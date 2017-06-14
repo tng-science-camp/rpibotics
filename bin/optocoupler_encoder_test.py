@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import curses
-from rover.optocoupler_encoder import OptocouplerEncoder
+from rpibotics.optocoupler_encoder import OptocouplerEncoder
 
 parser = argparse.ArgumentParser(
     description="Runs the optocoupler_encoder to determine the number of "
@@ -14,7 +14,7 @@ args = vars(parser.parse_args())
 
 
 def main(stdscr, pin=args['pin'], slit_count=args['slit_count']):
-    encoder = OptocouplerEncoder(pin, s=slit_count)
+    encoder = OptocouplerEncoder(pin, slit_count=slit_count)
     quit = False
     stdscr.nodelay(True)
     stdscr.clear()

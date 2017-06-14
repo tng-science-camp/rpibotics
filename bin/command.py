@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-from rover import rover_sj17
+from rpibotics import rover_sj17
 import time
 
-myRover = rover_sj17.RoverSJ17()
+myRover = rover_sj17.Rover()
 
 myRover.motor1.turn_clockwise()
 myRover.motor2.turn_counter_clockwise()

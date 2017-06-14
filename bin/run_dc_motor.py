@@ -2,7 +2,7 @@
 import argparse
 import curses
 import time
-from rover.dc_motor import DCMotor
+from rpibotics.dc_motor import DCMotor
 
 parser = argparse.ArgumentParser(
     description="Runs DC motor with the option to change the PWM parameters.")
