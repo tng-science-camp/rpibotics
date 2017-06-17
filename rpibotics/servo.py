@@ -36,7 +36,7 @@ class Servo(object):
         elif angle > 180.0:
             angle = 180.0
         self._pwm.start(self.calculate_duty_cycle(angle))
-        time.sleep(3.0)
+        time.sleep(1.5)
 
     def go_to_0(self):
         self.go_to(0.0)
