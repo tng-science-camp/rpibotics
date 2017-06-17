@@ -2,6 +2,7 @@
 
 """
 import logging
+import time
 import RPi.GPIO as GPIO
 
 
@@ -35,6 +36,7 @@ class Servo(object):
         elif angle > 180.0:
             angle = 180.0
         self._pwm.start(self.calculate_duty_cycle(angle))
+        time.sleep(1.0)
 
     def go_to_0(self):
         self.go_to(0.0)
