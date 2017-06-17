@@ -240,7 +240,8 @@ class MobilitySystem(object):
                                          [self.encoder_right.get_rotations()]])
                 if numpy.all(numpy.not_equal(previous_rotation, rotation)):
                     last_progress_time = time.time()
-                if time.time() - last_progress_time > 2.0:
+                duration_since_last_progress = time.time() - last_progress_time
+                if duration_since_last_progress > 2.0:
                     logging.debug('No progress has been made in %.1f sec.',
                                   duration_since_last_progress)
                     self.stop()
